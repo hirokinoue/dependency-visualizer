@@ -45,6 +45,15 @@ root
     \Hirokinoue\DependencyVisualizer\Tests\data\Qux
 
 RESULT;
+        $infiniteLoop = <<<RESULT
+\Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\B
+    \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\A
+    \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\C
+      \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\A
+
+RESULT;
         return [
             '始点がクラスの時ルートがクラス名' => [
                 __DIR__ . '/data/Foo.php',
@@ -53,6 +62,10 @@ RESULT;
             '始点がクラスではない時ルートがroot' => [
                 __DIR__ . '/data/foo.php',
                 $rootIsNotClass,
+            ],
+            '循環依存があっても無限ループせず解析が完了する' => [
+                __DIR__ . '/data/InfiniteLoop/A.php',
+                $infiniteLoop,
             ],
         ];
     }

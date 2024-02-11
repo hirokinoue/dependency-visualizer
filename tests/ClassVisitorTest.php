@@ -25,15 +25,16 @@ final class ClassVisitorTest extends TestCase
         $stmts = $parser->parse($code);
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NameResolver());
-        $nodeTraverser->addVisitor(new ClassVisitor($diagramUnit = new DiagramUnit('RootClass')));
+        $namespace = '\Hirokinoue\DependencyVisualizer\Tests\data';
+        $nodeTraverser->addVisitor(new ClassVisitor($diagramUnit = new DiagramUnit($namespace . '\RootClass', [$namespace . '\RootClass'])));
 
-        $expected = new DiagramUnit('RootClass');
-        $baz = new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\Baz');
-        $baz->push(new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\Qux'));
-        $expected->push(new DiagramUnit('\Error'));
-        $expected->push(new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\Bar'));
+        $expected = new DiagramUnit($namespace . '\RootClass', [$namespace . '\RootClass']);
+        $baz = new DiagramUnit($namespace . '\Baz', [$namespace . '\RootClass', $namespace . '\Baz']);
+        $baz->push(new DiagramUnit($namespace . '\Qux', [$namespace . '\RootClass', $namespace . '\Baz', $namespace . '\Qux']));
+        $expected->push(new DiagramUnit('\Error', [$namespace . '\RootClass', '\Error']));
+        $expected->push(new DiagramUnit($namespace . '\Bar', [$namespace . '\RootClass', $namespace . '\Bar']));
         $expected->push($baz);
-        $expected->push(new DiagramUnit('\stdClass'));
+        $expected->push(new DiagramUnit('\stdClass', [$namespace . '\RootClass', '\stdClass']));
 
         // when
         $nodeTraverser->traverse($stmts);
