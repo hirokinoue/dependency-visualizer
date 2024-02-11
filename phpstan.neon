@@ -1,0 +1,12 @@
+includes:
+  - phpstan-baseline.neon
+
+parameters:
+  level: 9
+  paths:
+    - src
+    - tests
+  excludePaths:
+    - tests/data/*
+    - tests/sample-data/*
+    - tests/*/data/*

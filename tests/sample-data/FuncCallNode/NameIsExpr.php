@@ -1,0 +1,3 @@
+<?php
+$funcName = 'phpversion';
+$funcName();

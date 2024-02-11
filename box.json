@@ -1,0 +1,9 @@
+{
+  "alias": "dependency-visualizer.phar",
+  "chmod": "0755",
+  "compactors": [],
+  "directories": ["bin", "src", "vendor"],
+  "main": "bin/dependency-visualizer",
+  "output": "dependency-visualizer.phar",
+  "stub": true
+}

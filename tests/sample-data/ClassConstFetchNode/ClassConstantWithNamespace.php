@@ -1,0 +1,2 @@
+<?php
+\Baz\Foo::Bar;

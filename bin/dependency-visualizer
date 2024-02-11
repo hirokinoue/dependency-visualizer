@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+namespace Hirokinoue\DependencyVisualizer;
+
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+if (\count($argv) !== 2) {
+    \fwrite(STDERR, 'Usage: dependency-visualizer <target php file>' . PHP_EOL);
+    exit(1);
+}
+
+$logger = new Logger('dependency visualizer');
+$stream = new StreamHandler(__DIR__ . '/../app.log');
+$stream->setFormatter(new LineFormatter(null, null, true));
+$logger->pushHandler($stream);
+
+$logger->info('start analyzing', ['target' => $argv[1]]);
+
+try {
+    $dependencyVisualizer = DependencyVisualizer::create($argv[1]);
+    $diagramUnit = $dependencyVisualizer->analyze();
+} catch (\Exception $e) {
+    $logger->error($e->getMessage());
+    $logger->error('finish analyzing abnormally');
+    exit(1);
+}
+
+$stringExporter = new StringExporter();
+echo $stringExporter->export($diagramUnit);
+
+$logger->info('finish analyzing');
+exit(0);
