@@ -18,6 +18,10 @@ final class ClassVisitor extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
+        if ($this->diagramUnit->shouldStopTraverse()) {
+            return $node;
+        }
+
         if (!$node instanceof FullyQualified) {
             return $node;
         }

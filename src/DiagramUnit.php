@@ -47,5 +47,9 @@ final class DiagramUnit
         return $this->ancestors;
     }
 
+    public function shouldStopTraverse(): bool
+    {
+        return $this->isCirculating;
+    }
 }
 
