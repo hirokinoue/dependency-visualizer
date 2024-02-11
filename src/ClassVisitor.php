@@ -2,7 +2,6 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
-use Hirokinoue\DependencyVisualizer\ClassLoader;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeTraverser;
@@ -25,7 +24,10 @@ final class ClassVisitor extends NodeVisitorAbstract
 
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
-            $subClass = new DiagramUnit($classFile->className());
+            $ancestors = $this->diagramUnit->ancestors();
+            $ancestors[] = $node->toCodeString();
+
+            $subClass = new DiagramUnit($classFile->className(), $ancestors);
             $this->diagramUnit->push($subClass);
 
             if ($classFile->codeNotFound()) {

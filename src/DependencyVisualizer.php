@@ -34,7 +34,7 @@ final class DependencyVisualizer
 
     public function analyze(): DiagramUnit
     {
-        $diagramUnit = new DiagramUnit($this->rootClassName());
+        $diagramUnit = $this->newDiagramUnit();
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NameResolver());
@@ -44,9 +44,16 @@ final class DependencyVisualizer
         return $diagramUnit;
     }
 
-    private function rootClassName(): string
+    private function newDiagramUnit(): DiagramUnit
     {
         $classLike = ClassLikeNodeFinder::create($this->stmts);
+        $rootClassName = $this->rootClassName($classLike);
+        $ancestors = ($classLike === null) ? [] : [$rootClassName];
+        return new DiagramUnit($rootClassName, $ancestors);
+    }
+
+    private function rootClassName(?ClassLikeNodeFinder $classLike): string
+    {
         if ($classLike === null || $classLike->classLikeName() === '') {
             // 分析の始点となるファイルがクラスではないケース
             return 'root';
