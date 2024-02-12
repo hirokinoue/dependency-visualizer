@@ -25,7 +25,9 @@ final class DiagramUnit
 
     public function push(DiagramUnit $other): void
     {
-        $this->classesDirectlyDependsOn[] = $other;
+        if (!$this->hasBeenPushed($other)) {
+            $this->classesDirectlyDependsOn[] = $other;
+        }
         $other->isCirculating = in_array($other->className(), $this->ancestors, true);
     }
 
@@ -51,5 +53,14 @@ final class DiagramUnit
     {
         return $this->isCirculating;
     }
-}
 
+    private function hasBeenPushed(DiagramUnit $other): bool
+    {
+        foreach ($this->classesDirectlyDependsOn as $diagramUnit) {
+            if ($diagramUnit->fullyQualifiedClassName === $other->fullyQualifiedClassName) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
