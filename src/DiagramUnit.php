@@ -14,6 +14,8 @@ final class DiagramUnit
      */
     private array $ancestors;
     private bool $isCirculating = false;
+    /** @var array<int, string> */
+    private static array $visitedClasses = [];
 
     /**
      * @param string[] $ancestors
@@ -62,5 +64,28 @@ final class DiagramUnit
             }
         }
         return false;
+    }
+
+    public function hasBeenVisited(): bool
+    {
+        if (in_array($this->fullyQualifiedClassName, self::$visitedClasses)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function registerVisitedClass(): void
+    {
+        self::$visitedClasses[] = $this->fullyQualifiedClassName;
+    }
+
+    public static function resetVisitedClasses(): void
+    {
+        self::$visitedClasses = [];
+    }
+
+    public static function countVisitedClasses(): int
+    {
+        return count(self::$visitedClasses);
     }
 }

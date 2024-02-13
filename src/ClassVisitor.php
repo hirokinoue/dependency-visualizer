@@ -14,6 +14,7 @@ final class ClassVisitor extends NodeVisitorAbstract
     private DiagramUnit $diagramUnit;
 
     public function __construct(DiagramUnit $diagramUnit) {
+        $diagramUnit->registerVisitedClass();
         $this->diagramUnit = $diagramUnit;
     }
 
@@ -34,7 +35,7 @@ final class ClassVisitor extends NodeVisitorAbstract
             $subClass = new DiagramUnit($classFile->className(), $ancestors);
             $this->diagramUnit->push($subClass);
 
-            if ($classFile->codeNotFound()) {
+            if ($classFile->codeNotFound() || $subClass->hasBeenVisited()) {
                 return $node;
             }
 
