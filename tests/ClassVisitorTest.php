@@ -45,6 +45,6 @@ RESULT;
         $result = $stringExporter->export($diagramUnit);
 
         // then
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 }
