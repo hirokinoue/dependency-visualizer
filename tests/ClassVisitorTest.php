@@ -48,4 +48,42 @@ RESULT;
         // then
         $this->assertSame($expected, $result);
     }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testClassVisitorに登録されたことがあるクラスは再びトラバースしないこと(): void
+    {
+        // given
+        DiagramUnit::resetVisitedClasses();
+        /** @var string $code */
+        $code = file_get_contents(__DIR__ . '/data/VisitedClass/A.php');
+        $parser = (new ParserFactory())->createForHostVersion();
+        /** @var Stmt[] $stmts */
+        $stmts = $parser->parse($code);
+        $sut = new ClassVisitor($diagramUnit = new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A', ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A']));
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NameResolver());
+        $nodeTraverser->addVisitor($sut);
+
+        $expected = <<<RESULT
+\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\B
+    \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\C
+    \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\B
+
+RESULT;
+
+        // when
+        $nodeTraverser->traverse($stmts);
+
+        $stringExporter = new StringExporter();
+        $result = $stringExporter->export($diagramUnit);
+
+        // then
+        $this->assertSame($expected, $result);
+        // A, B, Cの3つがトラバース（A, Bは1度だけトラバース）されることを期待。
+        $this->assertSame(3, DiagramUnit::countVisitedClasses());
+    }
 }
