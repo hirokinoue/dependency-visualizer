@@ -19,6 +19,7 @@ final class ClassVisitorTest extends TestCase
     public function testユーザ定義クラスの名前と内容_定義済みクラスの名前が取得できる_それ以外取得しないこと(): void
     {
         // given
+        DiagramUnit::resetVisitedClasses();
         /** @var string $code */
         $code = file_get_contents(__DIR__ . '/data/root.php');
         $parser = (new ParserFactory())->createForHostVersion();
