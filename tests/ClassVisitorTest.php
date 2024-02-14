@@ -13,23 +13,20 @@ use PHPUnit\Framework\TestCase;
 
 final class ClassVisitorTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        DiagramUnit::resetVisitedClasses();
+    }
+
     /**
      * @noinspection NonAsciiCharacters
      */
     public function testユーザ定義クラスの名前と内容_定義済みクラスの名前が取得できる_それ以外取得しないこと(): void
     {
         // given
-        DiagramUnit::resetVisitedClasses();
-        /** @var string $code */
-        $code = file_get_contents(__DIR__ . '/data/root.php');
-        $parser = (new ParserFactory())->createForHostVersion();
-        /** @var Stmt[] $stmts */
-        $stmts = $parser->parse($code);
-        $sut = new ClassVisitor($diagramUnit = new DiagramUnit('root', ['root']));
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new NameResolver());
-        $nodeTraverser->addVisitor($sut);
-
+        $stmts = $this->parse(__DIR__ . '/data/root.php');
+        $diagramUnit = new DiagramUnit('root', ['root']);
+        $nodeTraverser = $this->setUpTraverser($diagramUnit);
         $expected = <<<RESULT
 root
   \Hirokinoue\DependencyVisualizer\Tests\data\Bar
@@ -55,17 +52,9 @@ RESULT;
     public function testClassVisitorに登録されたことがあるクラスは再びトラバースしないこと(): void
     {
         // given
-        DiagramUnit::resetVisitedClasses();
-        /** @var string $code */
-        $code = file_get_contents(__DIR__ . '/data/VisitedClass/A.php');
-        $parser = (new ParserFactory())->createForHostVersion();
-        /** @var Stmt[] $stmts */
-        $stmts = $parser->parse($code);
-        $sut = new ClassVisitor($diagramUnit = new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A', ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A']));
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new NameResolver());
-        $nodeTraverser->addVisitor($sut);
-
+        $stmts = $this->parse(__DIR__ . '/data/VisitedClass/A.php');
+        $diagramUnit = new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A', ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A']);
+        $nodeTraverser = $this->setUpTraverser($diagramUnit);
         $expected = <<<RESULT
 \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A
   \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\B
@@ -85,5 +74,26 @@ RESULT;
         $this->assertSame($expected, $result);
         // A, B, Cの3つがトラバース（A, Bは1度だけトラバース）されることを期待。
         $this->assertSame(3, DiagramUnit::countVisitedClasses());
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function parse(string $path): array
+    {
+        /** @var string $code */
+        $code = file_get_contents($path);
+        $parser = (new ParserFactory())->createForHostVersion();
+        $stmts = $parser->parse($code);
+        return $stmts ?? [];
+    }
+
+    private function setUpTraverser(DiagramUnit $diagramUnit): NodeTraverser
+    {
+        $sut = new ClassVisitor($diagramUnit);
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NameResolver());
+        $nodeTraverser->addVisitor($sut);
+        return $nodeTraverser;
     }
 }
