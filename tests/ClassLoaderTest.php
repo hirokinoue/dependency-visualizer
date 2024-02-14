@@ -15,6 +15,7 @@ final class ClassLoaderTest extends TestCase
     public function test対象に応じてロードできること(FullyQualified $fullyQualified, string $expectedClassName, string $expectedCode): void
     {
         // given
+        ClassLoader::resetLoadedClasses();
         $sut = ClassLoader::create($fullyQualified);
 
         // when
@@ -32,7 +33,7 @@ final class ClassLoaderTest extends TestCase
      */
     public function data対象に応じてロードできること(): array
     {
-        $userDefinedClass = <<<CODE
+        $userDefinedClassCode = <<<CODE
 <?php
 namespace Hirokinoue\DependencyVisualizer\Tests\data;
 class UserDefinedClass{}
@@ -42,7 +43,7 @@ CODE;
             'ユーザー定義クラスはクラス名とコードが取得できる' => [
                 new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass'),
                 '\Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass',
-                $userDefinedClass,
+                $userDefinedClassCode,
             ],
             '内部クラスはクラス名のみ取得できる' => [
                 new FullyQualified('Exception'),
@@ -57,6 +58,51 @@ CODE;
             'キーワードはクラス名もコードも取得できない' => [
                 new FullyQualified('true'),
                 '',
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataロードしたことのあるクラスを再びロードしないこと
+     * @noinspection NonAsciiCharacters
+     */
+    public function testロードしたことのあるクラスを再びロードしないこと(FullyQualified $fullyQualified, string $expectedClassName, string $expectedCode): void
+    {
+        // given
+        $sut = ClassLoader::create($fullyQualified);
+
+        // when
+        $className = $sut->className();
+        $code = $sut->content();
+
+        // then
+        $this->assertSame($expectedClassName, $className);
+        $this->assertSame($expectedCode, $code);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     * @return array<string, array<int, FullyQualified|string|bool>>
+     */
+    public function dataロードしたことのあるクラスを再びロードしないこと(): array
+    {
+        $userDefinedClass = 'Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass';
+        $userDefinedClassCode = <<<CODE
+<?php
+namespace Hirokinoue\DependencyVisualizer\Tests\data;
+class UserDefinedClass{}
+
+CODE;
+        return [
+            '初回はロードする' => [
+                new FullyQualified($userDefinedClass),
+                '\\' . $userDefinedClass,
+                $userDefinedClassCode,
+            ],
+            '2回目以降はロードしない' => [
+                new FullyQualified($userDefinedClass),
+                '\\' . $userDefinedClass,
                 '',
             ],
         ];
