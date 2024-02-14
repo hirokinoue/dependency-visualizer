@@ -70,7 +70,7 @@ final class ClassLoader
         return $this->fullyQualifiedName !== '';
     }
 
-    public function codeNotFound(): bool {
+    public function notLoaded(): bool {
         return $this->content === '';
     }
 

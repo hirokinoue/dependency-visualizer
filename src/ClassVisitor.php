@@ -35,7 +35,7 @@ final class ClassVisitor extends NodeVisitorAbstract
             $subClass = new DiagramUnit($classFile->className(), $ancestors);
             $this->diagramUnit->push($subClass);
 
-            if ($classFile->codeNotFound() || $subClass->hasBeenVisited()) {
+            if ($classFile->notLoaded() || $subClass->hasBeenVisited()) {
                 return $node;
             }
 
