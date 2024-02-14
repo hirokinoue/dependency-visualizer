@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
+use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\ClassVisitor;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\StringExporter;
@@ -15,6 +16,7 @@ final class ClassVisitorTest extends TestCase
 {
     protected function setUp(): void
     {
+        ClassLoader::resetLoadedClasses();
         DiagramUnit::resetVisitedClasses();
     }
 

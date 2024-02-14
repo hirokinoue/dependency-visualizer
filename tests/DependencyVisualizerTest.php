@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
+use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DependencyVisualizer;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\StringExporter;
@@ -16,6 +17,7 @@ final class DependencyVisualizerTest extends TestCase
     public function test分析結果をテキスト形式で出力できること(string $path, string $expected): void
     {
         // given
+        ClassLoader::resetLoadedClasses();
         DiagramUnit::resetVisitedClasses();
         $sut = DependencyVisualizer::create($path);
 
