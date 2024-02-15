@@ -2,7 +2,9 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
+use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DependencyVisualizer;
+use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\StringExporter;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +17,8 @@ final class DependencyVisualizerTest extends TestCase
     public function test分析結果をテキスト形式で出力できること(string $path, string $expected): void
     {
         // given
+        ClassLoader::resetLoadedClasses();
+        DiagramUnit::resetVisitedClasses();
         $sut = DependencyVisualizer::create($path);
 
         // when
@@ -54,7 +58,12 @@ RESULT;
       \Hirokinoue\DependencyVisualizer\Tests\data\InfiniteLoop\A
 
 RESULT;
-        return [
+        $performanceEnhancement = <<<RESULT
+\Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\B
+  \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\C
+
+RESULT;        return [
             '始点がクラスの時ルートがクラス名' => [
                 __DIR__ . '/data/Foo.php',
                 $rootIsClass,
@@ -66,6 +75,10 @@ RESULT;
             '循環依存があっても無限ループせず解析が完了する' => [
                 __DIR__ . '/data/InfiniteLoop/A.php',
                 $infiniteLoop,
+            ],
+            '同じクラスを複数回使用する場合1つだけ図示する' => [
+                __DIR__ . '/data/RedundantDependency/A.php',
+                $performanceEnhancement,
             ],
         ];
     }

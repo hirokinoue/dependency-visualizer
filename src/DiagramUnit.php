@@ -14,6 +14,8 @@ final class DiagramUnit
      */
     private array $ancestors;
     private bool $isCirculating = false;
+    /** @var array<int, string> */
+    private static array $visitedClasses = [];
 
     /**
      * @param string[] $ancestors
@@ -25,7 +27,9 @@ final class DiagramUnit
 
     public function push(DiagramUnit $other): void
     {
-        $this->classesDirectlyDependsOn[] = $other;
+        if (!$this->hasBeenPushed($other)) {
+            $this->classesDirectlyDependsOn[] = $other;
+        }
         $other->isCirculating = in_array($other->className(), $this->ancestors, true);
     }
 
@@ -51,5 +55,37 @@ final class DiagramUnit
     {
         return $this->isCirculating;
     }
-}
 
+    private function hasBeenPushed(DiagramUnit $other): bool
+    {
+        foreach ($this->classesDirectlyDependsOn as $diagramUnit) {
+            if ($diagramUnit->fullyQualifiedClassName === $other->fullyQualifiedClassName) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasBeenVisited(): bool
+    {
+        if (in_array($this->fullyQualifiedClassName, self::$visitedClasses)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function registerVisitedClass(): void
+    {
+        self::$visitedClasses[] = $this->fullyQualifiedClassName;
+    }
+
+    public static function resetVisitedClasses(): void
+    {
+        self::$visitedClasses = [];
+    }
+
+    public static function countVisitedClasses(): int
+    {
+        return count(self::$visitedClasses);
+    }
+}
