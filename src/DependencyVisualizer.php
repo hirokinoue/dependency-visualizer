@@ -46,19 +46,19 @@ final class DependencyVisualizer
 
     private function newDiagramUnit(): DiagramUnit
     {
-        $classLike = ClassLikeNodeFinder::create($this->stmts);
+        $classLike = ClassLikeNodeFinder::find($this->stmts);
         $rootClassName = $this->rootClassName($classLike);
         $ancestors = ($classLike === null) ? [] : [$rootClassName];
         return new DiagramUnit($rootClassName, $ancestors);
     }
 
-    private function rootClassName(?ClassLikeNodeFinder $classLike): string
+    private function rootClassName(?ClassLikeWrapper $classLike): string
     {
-        if ($classLike === null || $classLike->classLikeName() === '') {
+        if ($classLike === null || $classLike->name() === '') {
             // 分析の始点となるファイルがクラスではないケース
             return 'root';
         }
         // 分析の始点となるファイルがクラスのケース
-        return $classLike->classLikeName();
+        return $classLike->name();
     }
 }
