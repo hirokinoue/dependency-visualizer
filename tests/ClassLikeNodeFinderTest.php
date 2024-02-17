@@ -3,6 +3,7 @@
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
 use Hirokinoue\DependencyVisualizer\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassLikeWrapper;
 use PhpParser\ParserFactory;
 use PhpParser\Node\Stmt;
 use PHPUnit\Framework\TestCase;
@@ -20,15 +21,33 @@ final class ClassLikeNodeFinderTest extends TestCase
         $parser = (new ParserFactory())->createForHostVersion();
         /** @var Stmt[] $stmts */
         $stmts = $parser->parse($code);
-        $sut = ClassLikeNodeFinder::create($stmts);
+
+        // when
+        $sut = ClassLikeNodeFinder::find($stmts);
+
+        // then
         if ($sut === null) {
             $this->fail('クラス宣言のノードが取得できませんでした。');
         }
+        $this->assertTrue($sut instanceof ClassLikeWrapper);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testクラス宣言のノードがないときnullを返すこと(): void
+    {
+        // given
+        /** @var string $code */
+        $code = file_get_contents(__DIR__ . '/data/foo.php');
+        $parser = (new ParserFactory())->createForHostVersion();
+        /** @var Stmt[] $stmts */
+        $stmts = $parser->parse($code);
 
         // when
-        $className = $sut->classLikeName();
+        $sut = ClassLikeNodeFinder::find($stmts);
 
         // then
-        $this->assertSame('\Hirokinoue\DependencyVisualizer\Tests\data\Foo', $className);
+        $this->assertNull($sut);
     }
 }
