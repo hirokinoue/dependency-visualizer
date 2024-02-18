@@ -53,6 +53,16 @@ class ClassLikeWrapper
             return self::ENUM;
         }
         // NOTE: PHP-Parser 5.0.0ではありえないケース
+        return self::defaultDeclaringElement();
+    }
+
+    public function isTrait(): bool
+    {
+        return $this->node instanceof Trait_;
+    }
+
+    public static function defaultDeclaringElement(): string
+    {
         return self::STEREOTYPE;
     }
 }

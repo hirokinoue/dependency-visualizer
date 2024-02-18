@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
+use Hirokinoue\DependencyVisualizer\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\ClassVisitor;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
@@ -27,7 +28,12 @@ final class ClassVisitorTest extends TestCase
     {
         // given
         $stmts = $this->parse(__DIR__ . '/data/root.php');
-        $diagramUnit = new DiagramUnit('root', ['root']);
+        $diagramUnit = new DiagramUnit(
+            'root',
+            ['root'],
+            true,
+            null
+        );
         $nodeTraverser = $this->setUpTraverser($diagramUnit);
         $expected = <<<RESULT
 root
@@ -55,7 +61,13 @@ RESULT;
     {
         // given
         $stmts = $this->parse(__DIR__ . '/data/VisitedClass/A.php');
-        $diagramUnit = new DiagramUnit('\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A', ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A']);
+        $classLike = ClassLikeNodeFinder::find($stmts);
+        $diagramUnit = new DiagramUnit(
+            '\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A',
+            ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A'],
+            false,
+            $classLike
+        );
         $nodeTraverser = $this->setUpTraverser($diagramUnit);
         $expected = <<<RESULT
 \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A

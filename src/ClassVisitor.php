@@ -31,15 +31,13 @@ final class ClassVisitor extends NodeVisitorAbstract
             $ancestors = $this->diagramUnit->ancestors();
             $ancestors[] = $node->toCodeString();
 
-            $subClass = new DiagramUnit($classFile->className(), $ancestors);
+            $stmts = $classFile->stmts();
+            $classLike = ClassLikeNodeFinder::find($stmts);
+
+            $subClass = new DiagramUnit($classFile->className(), $ancestors, false, $classLike);
             $this->diagramUnit->push($subClass);
 
-            if ($classFile->notLoaded() || $subClass->hasBeenVisited()) {
-                return $node;
-            }
-
-            $stmts = $classFile->stmts();
-            if ($stmts === []) {
+            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited()) {
                 return $node;
             }
 

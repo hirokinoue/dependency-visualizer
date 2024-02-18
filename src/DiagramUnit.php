@@ -16,13 +16,18 @@ final class DiagramUnit
     private bool $isCirculating = false;
     /** @var array<int, string> */
     private static array $visitedClasses = [];
+    private bool $isRoot;
+    // NOTE: nullになるのはDiagramUnitが定義済みクラスの場合とルートのDiagramUnitがクラスじゃない場合
+    private ?ClassLikeWrapper $classLikeWrapper;
 
     /**
      * @param string[] $ancestors
      */
-    public function __construct(string $fullyQualifiedClassName, array $ancestors = []) {
+    public function __construct(string $fullyQualifiedClassName, array $ancestors = [], bool $isRoot = false, ?ClassLikeWrapper $classLikeWrapper = null) {
         $this->fullyQualifiedClassName = $fullyQualifiedClassName;
         $this->ancestors = $ancestors;
+        $this->isRoot = $isRoot;
+        $this->classLikeWrapper = $classLikeWrapper;
     }
 
     public function push(DiagramUnit $other): void
@@ -35,6 +40,22 @@ final class DiagramUnit
 
     public function fullyQualifiedClassName(): string {
         return $this->fullyQualifiedClassName;
+    }
+
+    public function className(): string {
+        $parts = explode('\\', $this->fullyQualifiedClassName);
+        return end($parts);
+    }
+
+    public function namespace(): string
+    {
+        $parts = explode('\\', $this->fullyQualifiedClassName);
+        array_pop($parts);
+        return implode('\\', $parts);
+    }
+
+    public function isGlobal(): bool {
+        return $this->namespace() === '';
     }
 
     /**
@@ -87,5 +108,28 @@ final class DiagramUnit
     public static function countVisitedClasses(): int
     {
         return count(self::$visitedClasses);
+    }
+
+
+    public function isClassLikeRoot(): bool
+    {
+        return $this->isRoot && $this->classLikeWrapper !== null;
+    }
+
+    public function isNonClassLikeRoot(): bool
+    {
+        return $this->isRoot && $this->classLikeWrapper === null;
+    }
+
+    public function declaringElement(): string
+    {
+        if ($this->classLikeWrapper === null) {
+            return ClassLikeWrapper::defaultDeclaringElement();
+        }
+        return $this->classLikeWrapper->declaringElement();
+    }
+
+    public function isTrait(): bool {
+        return $this->classLikeWrapper !== null && $this->classLikeWrapper->isTrait();
     }
 }

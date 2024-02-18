@@ -49,7 +49,7 @@ final class DependencyVisualizer
         $classLike = ClassLikeNodeFinder::find($this->stmts);
         $rootClassName = $this->rootClassName($classLike);
         $ancestors = ($classLike === null) ? [] : [$rootClassName];
-        return new DiagramUnit($rootClassName, $ancestors);
+        return new DiagramUnit($rootClassName, $ancestors, true, $classLike);
     }
 
     private function rootClassName(?ClassLikeWrapper $classLike): string
