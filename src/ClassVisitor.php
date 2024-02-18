@@ -39,9 +39,8 @@ final class ClassVisitor extends NodeVisitorAbstract
                 return $node;
             }
 
-            $parser = (new ParserFactory())->createForHostVersion();
-            $stmts = $parser->parse($classFile->content());
-            if ($stmts === null) {
+            $stmts = $classFile->stmts();
+            if ($stmts === []) {
                 return $node;
             }
 

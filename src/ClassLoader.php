@@ -3,6 +3,8 @@
 namespace Hirokinoue\DependencyVisualizer;
 
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
+use PhpParser\ParserFactory;
 use ReflectionClass;
 
 final class ClassLoader
@@ -11,6 +13,8 @@ final class ClassLoader
     private string $content;
     /** @var array<int, string> */
     private static array $loadedClasses = [];
+    /** @var null|Stmt[] $stmts */
+    private ?array $stmts = null;
 
     private function __construct(string $fullyQualifiedName, string $content) {
         $this->fullyQualifiedName = $fullyQualifiedName;
@@ -64,6 +68,22 @@ final class ClassLoader
 
     public function content(): string {
         return $this->content;
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    public function stmts(): array {
+        if ($this->stmts !== null) {
+            return $this->stmts;
+        }
+
+        $parser = (new ParserFactory())->createForHostVersion();
+        $stmts = $parser->parse($this->content());
+        if ($stmts === null) {
+            return $this->stmts = [];
+        }
+        return $this->stmts = $stmts;
     }
 
     public function isClass(): bool {
