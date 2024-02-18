@@ -7,7 +7,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
-use PhpParser\ParserFactory;
 
 final class ClassVisitor extends NodeVisitorAbstract
 {
