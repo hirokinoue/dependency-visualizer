@@ -30,10 +30,10 @@ final class DiagramUnit
         if (!$this->hasBeenPushed($other)) {
             $this->classesDirectlyDependsOn[] = $other;
         }
-        $other->isCirculating = in_array($other->className(), $this->ancestors, true);
+        $other->isCirculating = in_array($other->fullyQualifiedClassName(), $this->ancestors, true);
     }
 
-    public function className(): string {
+    public function fullyQualifiedClassName(): string {
         return $this->fullyQualifiedClassName;
     }
 

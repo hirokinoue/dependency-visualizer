@@ -12,7 +12,7 @@ final class StringExporter
 
     public function export(DiagramUnit $diagramUnit, string $indent = ''): string
     {
-        $this->buffer .= $indent . $diagramUnit->className() . PHP_EOL;
+        $this->buffer .= $indent . $diagramUnit->fullyQualifiedClassName() . PHP_EOL;
         $this->writeBuffer($diagramUnit, $indent);
         return $this->buffer;
     }
@@ -21,7 +21,7 @@ final class StringExporter
     {
         $indent .= '  ';
         foreach ($diagramUnit->subClasses() as $subClass) {
-            $this->buffer .= $indent . $subClass->className() . PHP_EOL;
+            $this->buffer .= $indent . $subClass->fullyQualifiedClassName() . PHP_EOL;
             $this->writeBuffer($subClass, $indent);
         }
     }
