@@ -4,6 +4,8 @@ namespace Hirokinoue\DependencyVisualizer\Tests;
 
 use Hirokinoue\DependencyVisualizer\ClassLoader;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
 final class ClassLoaderTest extends TestCase
@@ -12,8 +14,11 @@ final class ClassLoaderTest extends TestCase
      * @dataProvider data対象に応じてロードできること
      * @noinspection NonAsciiCharacters
      */
-    public function test対象に応じてロードできること(FullyQualified $fullyQualified, string $expectedClassName, string $expectedCode): void
-    {
+    public function test対象に応じてロードできること(
+        FullyQualified $fullyQualified,
+        string $expectedClassName,
+        string $expectedCode
+    ): void {
         // given
         ClassLoader::resetLoadedClasses();
         $sut = ClassLoader::create($fullyQualified);
@@ -67,8 +72,11 @@ CODE;
      * @dataProvider dataロードしたことのあるクラスを再びロードしないこと
      * @noinspection NonAsciiCharacters
      */
-    public function testロードしたことのあるクラスを再びロードしないこと(FullyQualified $fullyQualified, string $expectedClassName, string $expectedCode): void
-    {
+    public function testロードしたことのあるクラスを再びロードしないこと(
+        FullyQualified $fullyQualified,
+        string $expectedClassName,
+        string $expectedCode
+    ): void {
         // given
         $sut = ClassLoader::create($fullyQualified);
 
@@ -106,5 +114,37 @@ CODE;
                 '',
             ],
         ];
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testStmtノードが取得できること(): void
+    {
+        // given
+        $sut = ClassLoader::create(new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\Foo'));
+
+        // when
+        $stmts = $sut->stmts();
+
+        // then
+        foreach ($stmts as $stmt) {
+            $this->assertInstanceOf(Stmt::class, $stmt);
+        }
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testStmtノードが取得できないこと(): void
+    {
+        // given
+        $sut = ClassLoader::create(new FullyQualified('Exception'));
+
+        // when
+        $stmts = $sut->stmts();
+
+        // then
+        $this->assertEquals([], $stmts);
     }
 }
