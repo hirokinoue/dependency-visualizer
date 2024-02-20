@@ -63,7 +63,8 @@ RESULT;
   \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\B
   \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\C
 
-RESULT;        return [
+RESULT;
+        return [
             '始点がクラスの時ルートがクラス名' => [
                 __DIR__ . '/data/Foo.php',
                 $rootIsClass,
