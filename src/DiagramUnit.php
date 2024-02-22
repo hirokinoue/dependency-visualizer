@@ -2,6 +2,8 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use PhpParser\Node\Stmt\ClassMethod;
+
 final class DiagramUnit
 {
     private string $fullyQualifiedClassName;
@@ -131,5 +133,15 @@ final class DiagramUnit
 
     public function isTrait(): bool {
         return $this->classLikeWrapper !== null && $this->classLikeWrapper->isTrait();
+    }
+
+    /**
+     * @return ClassMethod[]
+     */
+    public function methods(): array {
+        if ($this->classLikeWrapper === null) {
+            return [];
+        }
+        return $this->classLikeWrapper->methods();
     }
 }

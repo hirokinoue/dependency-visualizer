@@ -5,6 +5,7 @@ namespace Hirokinoue\DependencyVisualizer;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
@@ -64,5 +65,13 @@ class ClassLikeWrapper
     public static function defaultDeclaringElement(): string
     {
         return self::STEREOTYPE;
+    }
+
+    /**
+     * @return ClassMethod[]
+     */
+    public function methods(): array
+    {
+        return $this->node->getMethods();
     }
 }
