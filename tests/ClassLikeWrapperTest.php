@@ -8,6 +8,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
@@ -62,9 +63,8 @@ final class ClassLikeWrapperTest extends TestCase
     /**
      * @dataProvider data宣言する要素が取得できること
      * @noinspection NonAsciiCharacters
-     * @param ClassLike $classLike
      */
-    public function test宣言する要素が取得できること($classLike, string $expected): void
+    public function test宣言する要素が取得できること(ClassLike $classLike, string $expected): void
     {
         // given
         $sut = new ClassLikeWrapper($classLike);
@@ -104,5 +104,38 @@ final class ClassLikeWrapperTest extends TestCase
                 'enum',
             ],
         ];
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testメソッドが取得できること(): void
+    {
+        // given
+        $expected = [new ClassMethod('bar')];
+        $classLike =  new Class_(new Identifier('Foo'), ['stmts' => $expected]);
+        $sut = new ClassLikeWrapper($classLike);
+
+        // when
+        $methods = $sut->methods();
+
+        // then
+        $this->assertEquals($expected, $methods);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testメソッドがない時空の配列が返ること(): void
+    {
+        // given
+        $classLike =  new Class_(new Identifier('Foo'));
+        $sut = new ClassLikeWrapper($classLike);
+
+        // when
+        $methods = $sut->methods();
+
+        // then
+        $this->assertSame([], $methods);
     }
 }

@@ -6,7 +6,9 @@ use Hirokinoue\DependencyVisualizer\ClassLikeWrapper;
 use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Modifiers;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
@@ -298,5 +300,48 @@ final class DiagramUnitTest extends TestCase
                 false,
             ],
         ];
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testクラス類ではない時メソッドが1つも得られないこと(): void
+    {
+        // given
+        $sut = new DiagramUnit(
+            '\Foo',
+            ['\Foo'],
+            true,
+            null
+        );
+
+        // when
+        $methods = $sut->methods();
+
+        // then
+        $this->assertSame([], $methods);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function testクラス類である時メソッドが得られること(): void
+    {
+        // given
+        $expected = [new ClassMethod('bar')];
+        $classLike =  new Class_(new Identifier('Foo'), ['stmts' => $expected]);
+        $classLikeWrapper = new ClassLikeWrapper($classLike);
+        $sut = new DiagramUnit(
+            '\Foo',
+            ['\Foo'],
+            true,
+            $classLikeWrapper
+        );
+
+        // when
+        $methods = $sut->methods();
+
+        // then
+        $this->assertEquals($expected, $methods);
     }
 }
