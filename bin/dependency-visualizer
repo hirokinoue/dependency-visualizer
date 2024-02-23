@@ -3,26 +3,46 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use Hirokinoue\DependencyVisualizer\Exporter\Exporter;
+use Hirokinoue\DependencyVisualizer\Exporter\PlantUmlExporter;
+use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-require __DIR__ . '/../vendor/autoload.php';
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
 
-if (\count($argv) !== 2) {
-    \fwrite(STDERR, 'Usage: dependency-visualizer <target php file>' . PHP_EOL);
-    exit(1);
+list($options, $file) = parseArgs($argv);
+
+if ($options['help']) {
+    echo 'Usage: dependency-visualizer [options] <target php file>' . PHP_EOL;
+    echo 'Options:' . PHP_EOL;
+    echo '  -h: Show this help.' . PHP_EOL;
+    echo '  -l: Output log to current directory.' . PHP_EOL;
+    echo '  -m: Draw methods in diagram.' . PHP_EOL;
+    echo '  -s: Output analysis results in string format.' . PHP_EOL;
+    exit(0);
 }
 
 $logger = new Logger('dependency visualizer');
-$stream = new StreamHandler(__DIR__ . '/../app.log');
-$stream->setFormatter(new LineFormatter(null, null, true));
-$logger->pushHandler($stream);
+if ($options['log']) {
+    $handler = new StreamHandler(getcwd() . '/app.log');
+    $handler->setFormatter(new LineFormatter(null, null, true));
+    $logger->pushHandler($handler);
+} else {
+    $logger->pushHandler(new NullHandler());
+}
 
-$logger->info('start analyzing', ['target' => $argv[1]]);
+$logger->info('start analyzing', ['target' => $file]);
 
 try {
-    $dependencyVisualizer = DependencyVisualizer::create($argv[1]);
+    $dependencyVisualizer = DependencyVisualizer::create($file);
     $diagramUnit = $dependencyVisualizer->analyze();
 } catch (\Exception $e) {
     $logger->error($e->getMessage());
@@ -30,8 +50,44 @@ try {
     exit(1);
 }
 
-$stringExporter = new StringExporter();
-echo $stringExporter->export($diagramUnit);
+$exporter = exporterFactory($options);
+echo $exporter->export($diagramUnit);
 
 $logger->info('finish analyzing');
 exit(0);
+
+function exporterFactory($options): Exporter {
+    if ($options['exporter'] === 'plantuml') {
+        return new PlantUmlExporter($options['drawMethod']);
+    }
+    return new StringExporter();
+}
+
+function parseArgs($args): array {
+    $options = [
+        'help' => false,
+        'log' => false,
+        'drawMethod' => false,
+        'exporter' => 'plantuml',
+    ];
+    $file = '';
+    foreach ($args as $arg) {
+        switch ($arg) {
+            case '-h':
+                $options['help'] = true;
+                break;
+            case '-l':
+                $options['log'] = true;
+                break;
+            case '-m':
+                $options['drawMethod'] = true;
+                break;
+            case '-s':
+                $options['exporter'] = 'string';
+                break;
+            default:
+                $file = $arg;
+        }
+    }
+    return [$options, $file];
+}
