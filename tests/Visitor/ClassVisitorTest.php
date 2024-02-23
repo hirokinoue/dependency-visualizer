@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer\Tests;
+namespace Hirokinoue\DependencyVisualizer\Tests\Visitor;
 
-use Hirokinoue\DependencyVisualizer\ClassLikeNodeFinder;
-use Hirokinoue\DependencyVisualizer\ClassLoader;
-use Hirokinoue\DependencyVisualizer\ClassVisitor;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
+use Hirokinoue\DependencyVisualizer\Visitor\ClassVisitor;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
@@ -27,7 +27,7 @@ final class ClassVisitorTest extends TestCase
     public function testユーザ定義クラスの名前と内容_定義済みクラスの名前が取得できる_それ以外取得しないこと(): void
     {
         // given
-        $stmts = $this->parse(__DIR__ . '/data/root.php');
+        $stmts = $this->parse(__DIR__ . '/../data/root.php');
         $diagramUnit = new DiagramUnit(
             'root',
             ['root'],
@@ -60,7 +60,7 @@ RESULT;
     public function testClassVisitorに登録されたことがあるクラスは再びトラバースしないこと(): void
     {
         // given
-        $stmts = $this->parse(__DIR__ . '/data/VisitedClass/A.php');
+        $stmts = $this->parse(__DIR__ . '/../data/VisitedClass/A.php');
         $classLike = ClassLikeNodeFinder::find($stmts);
         $diagramUnit = new DiagramUnit(
             '\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A',
@@ -96,7 +96,7 @@ RESULT;
     private function parse(string $path): array
     {
         /** @var string $code */
-        $code = file_get_contents($path);
+        $code = \file_get_contents($path);
         $parser = (new ParserFactory())->createForHostVersion();
         $stmts = $parser->parse($code);
         return $stmts ?? [];

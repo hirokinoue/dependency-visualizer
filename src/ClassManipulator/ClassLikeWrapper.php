@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\ClassManipulator;
 
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;

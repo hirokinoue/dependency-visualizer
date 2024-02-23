@@ -2,6 +2,9 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
+use Hirokinoue\DependencyVisualizer\Visitor\ClassVisitor;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;

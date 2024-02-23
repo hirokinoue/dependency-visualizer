@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer\Tests;
+namespace Hirokinoue\DependencyVisualizer\Tests\ClassManipulator;
 
-use Hirokinoue\DependencyVisualizer\ClassLoader;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
-use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
 final class ClassLoaderTest extends TestCase

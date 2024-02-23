@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\ClassManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeVisitor\NameResolver;
 
 class ClassLikeNodeFinder

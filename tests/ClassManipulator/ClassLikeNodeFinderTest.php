@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer\Tests;
+namespace Hirokinoue\DependencyVisualizer\Tests\ClassManipulator;
 
-use Hirokinoue\DependencyVisualizer\ClassLikeNodeFinder;
-use Hirokinoue\DependencyVisualizer\ClassLikeWrapper;
-use PhpParser\ParserFactory;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use PhpParser\Node\Stmt;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
 final class ClassLikeNodeFinderTest extends TestCase
@@ -17,7 +17,7 @@ final class ClassLikeNodeFinderTest extends TestCase
     {
         // given
         /** @var string $code */
-        $code = file_get_contents(__DIR__ . '/data/Foo.php');
+        $code = \file_get_contents(__DIR__ . '/../data/Foo.php');
         $parser = (new ParserFactory())->createForHostVersion();
         /** @var Stmt[] $stmts */
         $stmts = $parser->parse($code);
@@ -39,7 +39,7 @@ final class ClassLikeNodeFinderTest extends TestCase
     {
         // given
         /** @var string $code */
-        $code = file_get_contents(__DIR__ . '/data/foo.php');
+        $code = \file_get_contents(__DIR__ . '/../data/foo.php');
         $parser = (new ParserFactory())->createForHostVersion();
         /** @var Stmt[] $stmts */
         $stmts = $parser->parse($code);

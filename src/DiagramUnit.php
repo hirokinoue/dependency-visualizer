@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use PhpParser\Node\Stmt\ClassMethod;
 
 final class DiagramUnit

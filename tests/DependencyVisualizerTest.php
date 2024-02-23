@@ -2,7 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
-use Hirokinoue\DependencyVisualizer\ClassLoader;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DependencyVisualizer;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;

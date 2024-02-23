@@ -1,7 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\Visitor;
 
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
+use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeTraverser;

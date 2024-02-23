@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer\Tests;
+namespace Hirokinoue\DependencyVisualizer\Tests\ClassManipulator;
 
-use Hirokinoue\DependencyVisualizer\ClassLikeWrapper;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use PhpParser\Modifiers;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;

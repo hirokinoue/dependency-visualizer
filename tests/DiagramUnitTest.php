@@ -2,8 +2,8 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
-use Hirokinoue\DependencyVisualizer\ClassLikeWrapper;
-use Hirokinoue\DependencyVisualizer\ClassLoader;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Modifiers;
 use PhpParser\Node\Identifier;
