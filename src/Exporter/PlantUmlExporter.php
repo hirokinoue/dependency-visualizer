@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\Exporter;
 
+use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use InvalidArgumentException;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
@@ -13,7 +14,7 @@ use PhpParser\Node\UnionType;
 /**
  * @see https://plantuml.com/ja/class-diagram
  */
-final class PlantUmlExporter
+final class PlantUmlExporter implements Exporter
 {
     /** @var string[] fully qualified name */
     private array $drawnClasses = [];
@@ -155,7 +156,7 @@ final class PlantUmlExporter
                     $names[] = $this->nameFromIntersectionType($type);
                 }
             }
-            return ': ' . implode('|', $names);
+            return ': ' . \implode('|', $names);
         }
         if ($method->returnType instanceof IntersectionType) {
             return ': ' . $this->nameFromIntersectionType($method->returnType);
@@ -174,6 +175,6 @@ final class PlantUmlExporter
                 $names[] = $eachType->getLast();
             }
         }
-        return implode('&', $names);
+        return \implode('&', $names);
     }
 }

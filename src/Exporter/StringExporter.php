@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\Exporter;
 
-final class StringExporter
+use Hirokinoue\DependencyVisualizer\DiagramUnit;
+
+final class StringExporter implements Exporter
 {
     private string $buffer;
 
@@ -10,8 +12,9 @@ final class StringExporter
         $this->buffer = '';
     }
 
-    public function export(DiagramUnit $diagramUnit, string $indent = ''): string
+    public function export(DiagramUnit $diagramUnit): string
     {
+        $indent = '';
         $this->buffer .= $indent . $diagramUnit->fullyQualifiedClassName() . PHP_EOL;
         $this->writeBuffer($diagramUnit, $indent);
         return $this->buffer;

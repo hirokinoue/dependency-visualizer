@@ -5,7 +5,7 @@ namespace Hirokinoue\DependencyVisualizer\Tests;
 use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DependencyVisualizer;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
-use Hirokinoue\DependencyVisualizer\StringExporter;
+use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
 use PHPUnit\Framework\TestCase;
 
 final class DependencyVisualizerTest extends TestCase

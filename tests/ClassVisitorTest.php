@@ -6,7 +6,7 @@ use Hirokinoue\DependencyVisualizer\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassLoader;
 use Hirokinoue\DependencyVisualizer\ClassVisitor;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
-use Hirokinoue\DependencyVisualizer\StringExporter;
+use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
