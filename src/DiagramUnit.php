@@ -3,6 +3,7 @@
 namespace Hirokinoue\DependencyVisualizer;
 
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use PhpParser\Node\Stmt\ClassMethod;
 
 final class DiagramUnit
@@ -26,7 +27,12 @@ final class DiagramUnit
     /**
      * @param string[] $ancestors
      */
-    public function __construct(string $fullyQualifiedClassName, array $ancestors = [], bool $isRoot = false, ?ClassLikeWrapper $classLikeWrapper = null) {
+    public function __construct(
+        string $fullyQualifiedClassName,
+        array $ancestors = [],
+        bool $isRoot = false,
+        ?ClassLikeWrapper $classLikeWrapper = null
+    ) {
         $this->fullyQualifiedClassName = $fullyQualifiedClassName;
         $this->ancestors = $ancestors;
         $this->isRoot = $isRoot;
@@ -77,7 +83,18 @@ final class DiagramUnit
 
     public function shouldStopTraverse(): bool
     {
-        return $this->isCirculating;
+        return $this->isCirculating || $this->isEndOfAnalysis();
+    }
+
+    private function isEndOfAnalysis(): bool
+    {
+        foreach (Config::endOfAnalysis() as $endOfAnalysis) {
+            $pos = strpos($this->fullyQualifiedClassName, $endOfAnalysis);
+            if ($pos === 0 || $pos === 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function hasBeenPushed(DiagramUnit $other): bool
