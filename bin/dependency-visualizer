@@ -3,6 +3,7 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\Exporter\Exporter;
 use Hirokinoue\DependencyVisualizer\Exporter\PlantUmlExporter;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
@@ -29,6 +30,10 @@ if ($options['help']) {
     echo '  -s: Output analysis results in string format.' . PHP_EOL;
     exit(0);
 }
+
+Config::initialize(\getcwd());
+
+ini_set('memory_limit', Config::memoryLimit());
 
 $logger = new Logger('dependency visualizer');
 if ($options['log']) {
