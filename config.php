@@ -7,6 +7,6 @@ return $config = [
     // Note that if A depends on B and C, and B depends on C, and B is excluded,
     // the dependence from A to C will be shown, but the dependence from B to C will not be shown.
     'endOfAnalysis' => [
-        'PhpParser',
+        'PhpParser\\',
     ],
 ];

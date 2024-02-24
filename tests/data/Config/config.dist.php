@@ -2,6 +2,6 @@
 return $config = [
     'memoryLimit' => 'Foo',
     'endOfAnalysis' => [
-        'Bar',
+        'Bar\\',
     ],
 ];

@@ -21,6 +21,6 @@ final class ConfigTest extends TestCase
 
         // then
         $this->assertSame('Foo', $memoryLimit);
-        $this->assertSame(['Bar'], $endOfAnalysis);
+        $this->assertSame(['Bar\\'], $endOfAnalysis);
     }
 }
