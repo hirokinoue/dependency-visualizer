@@ -4,4 +4,7 @@ return $config = [
     'endOfAnalysis' => [
         'Bar\\',
     ],
+    'excludeFromAnalysis' => [
+        'Baz\\',
+    ],
 ];

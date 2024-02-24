@@ -9,4 +9,9 @@ return $config = [
     'endOfAnalysis' => [
         'PhpParser\\',
     ],
+    // Specify a part of a namespace.
+    // Classes starting with the given namespace will not be analyzed.
+    'excludeFromAnalysis' => [
+        'PhpParser\Node\\',
+    ],
 ];
