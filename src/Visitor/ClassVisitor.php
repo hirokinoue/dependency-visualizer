@@ -4,6 +4,7 @@ namespace Hirokinoue\DependencyVisualizer\Visitor;
 
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -29,6 +30,10 @@ final class ClassVisitor extends NodeVisitorAbstract
             return $node;
         }
 
+        if ($this->isExcludedNamespace($node)) {
+            return $node;
+        }
+
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
             $ancestors = $this->diagramUnit->ancestors();
@@ -50,5 +55,15 @@ final class ClassVisitor extends NodeVisitorAbstract
             $nodeTraverser->traverse($stmts);
         }
         return $node;
+    }
+
+    private function isExcludedNamespace(FullyQualified $node): bool {
+        foreach (Config::excludeFromAnalysis() as $excludeFromAnalysis) {
+            $pos = strpos($node->toCodeString(), $excludeFromAnalysis);
+            if ($pos === 0 || $pos === 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }

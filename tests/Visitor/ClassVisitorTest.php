@@ -3,11 +3,16 @@
 namespace Hirokinoue\DependencyVisualizer\Tests\Visitor;
 
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
 use Hirokinoue\DependencyVisualizer\Visitor\ClassVisitor;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
@@ -88,6 +93,45 @@ RESULT;
         $this->assertSame($expected, $result);
         // A, B, Cの3つがトラバース（A, Bは1度だけトラバース）されることを期待。
         $this->assertSame(3, DiagramUnit::countVisitedClasses());
+    }
+
+    /**
+     * @dataProvider data指定された名前空間を解析しないこと
+     * @noinspection NonAsciiCharacters
+     */
+    public function test指定された名前空間を解析しないこと(string $path): void
+    {
+        // given
+        Config::initialize($path);
+        $sut = new ClassVisitor(new DiagramUnit(
+            '\Hirokinoue\DependencyVisualizer\Tests\data\Foo',
+            ['\Hirokinoue\DependencyVisualizer\Tests\data\Foo'],
+            false,
+            new ClassLikeWrapper(new Class_(new Identifier('Foo')))
+        ));
+
+        // when
+        $sut->enterNode(new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\Qux'));
+
+        // then
+        // QuxがカウントされずFooの1回のみがカウントされることを期待。
+        $this->assertSame(1, DiagramUnit::countVisitedClasses());
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     * @return array<string, array<int, string>>
+     */
+    public function data指定された名前空間を解析しないこと(): array
+    {
+        return [
+            '名前空間を完全修飾名で指定する' => [
+                __DIR__ . '/../data/Visitor/Config/0',
+            ],
+            '名前空間を修飾名で指定する' => [
+                __DIR__ . '/../data/Visitor/Config/1',
+            ],
+        ];
     }
 
     /**
