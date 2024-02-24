@@ -60,21 +60,21 @@ RESULT;
     public function testClassVisitorに登録されたことがあるクラスは再びトラバースしないこと(): void
     {
         // given
-        $stmts = $this->parse(__DIR__ . '/../data/VisitedClass/A.php');
+        $stmts = $this->parse(__DIR__ . '/../data/Visitor/VisitedClass/A.php');
         $classLike = ClassLikeNodeFinder::find($stmts);
         $diagramUnit = new DiagramUnit(
-            '\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A',
-            ['\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A'],
+            '\Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A',
+            ['\Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A'],
             false,
             $classLike
         );
         $nodeTraverser = $this->setUpTraverser($diagramUnit);
         $expected = <<<RESULT
-\Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A
-  \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\B
-    \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\A
-  \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\C
-    \Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass\B
+\Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\B
+    \Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A
+  \Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\C
+    \Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\B
 
 RESULT;
 

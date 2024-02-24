@@ -1,6 +1,6 @@
 <?php
 
-namespace Hirokinoue\DependencyVisualizer\Tests\data\VisitedClass;
+namespace Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass;
 
 class A
 {
