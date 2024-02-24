@@ -83,12 +83,13 @@ final class DiagramUnitTest extends TestCase
     }
 
     /**
+     * @dataProvider data指定された名前空間のクラスをトラバースしないこと
      * @noinspection NonAsciiCharacters
      */
-    public function test指定された名前空間のクラスをトラバースしないこと(): void
+    public function test指定された名前空間のクラスをトラバースしないこと(string $path): void
     {
         // given
-        Config::initialize(__DIR__ . '/data/Config');
+        Config::initialize($path);
         $sut = new DiagramUnit(
             '\Bar\Foo',
             ['\Bar\Foo'],
@@ -101,6 +102,22 @@ final class DiagramUnitTest extends TestCase
 
         // then
         $this->assertTrue($shouldStop);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     * @return array<string, array<int, string>>
+     */
+    public function data指定された名前空間のクラスをトラバースしないこと(): array
+    {
+        return [
+            '名前空間を完全修飾名で指定する' => [
+                __DIR__ . '/data/DiagramUnit/Config/0',
+            ],
+            '名前空間を修飾名で指定する' => [
+                __DIR__ . '/data/DiagramUnit/Config/1',
+            ],
+        ];
     }
 
     /**
