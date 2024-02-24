@@ -2,10 +2,10 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests;
 
-use Hirokinoue\DependencyVisualizer\ClassLoader;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\DependencyVisualizer;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
-use Hirokinoue\DependencyVisualizer\StringExporter;
+use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
 use PHPUnit\Framework\TestCase;
 
 final class DependencyVisualizerTest extends TestCase
@@ -63,7 +63,8 @@ RESULT;
   \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\B
   \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\C
 
-RESULT;        return [
+RESULT;
+        return [
             '始点がクラスの時ルートがクラス名' => [
                 __DIR__ . '/data/Foo.php',
                 $rootIsClass,

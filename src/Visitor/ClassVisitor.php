@@ -1,13 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Hirokinoue\DependencyVisualizer;
+namespace Hirokinoue\DependencyVisualizer\Visitor;
 
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
+use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
+use Hirokinoue\DependencyVisualizer\Config\Config;
+use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
-use PhpParser\ParserFactory;
 
 final class ClassVisitor extends NodeVisitorAbstract
 {
@@ -27,21 +30,22 @@ final class ClassVisitor extends NodeVisitorAbstract
             return $node;
         }
 
+        if ($this->isExcludedNamespace($node)) {
+            return $node;
+        }
+
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
             $ancestors = $this->diagramUnit->ancestors();
             $ancestors[] = $node->toCodeString();
 
-            $subClass = new DiagramUnit($classFile->className(), $ancestors);
+            $stmts = $classFile->stmts();
+            $classLike = ClassLikeNodeFinder::find($stmts);
+
+            $subClass = new DiagramUnit($classFile->className(), $ancestors, false, $classLike);
             $this->diagramUnit->push($subClass);
 
-            if ($classFile->notLoaded() || $subClass->hasBeenVisited()) {
-                return $node;
-            }
-
-            $parser = (new ParserFactory())->createForHostVersion();
-            $stmts = $parser->parse($classFile->content());
-            if ($stmts === null) {
+            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited()) {
                 return $node;
             }
 
@@ -51,5 +55,15 @@ final class ClassVisitor extends NodeVisitorAbstract
             $nodeTraverser->traverse($stmts);
         }
         return $node;
+    }
+
+    private function isExcludedNamespace(FullyQualified $node): bool {
+        foreach (Config::excludeFromAnalysis() as $excludeFromAnalysis) {
+            $pos = strpos($node->toCodeString(), $excludeFromAnalysis);
+            if ($pos === 0 || $pos === 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }
