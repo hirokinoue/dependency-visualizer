@@ -4,6 +4,7 @@ namespace Hirokinoue\DependencyVisualizer\Tests;
 
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use PhpParser\Modifiers;
 use PhpParser\Node\Identifier;
@@ -78,6 +79,27 @@ final class DiagramUnitTest extends TestCase
         $shouldStop = $sut->shouldStopTraverse();
 
         // then2
+        $this->assertTrue($shouldStop);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function test指定された名前空間のクラスをトラバースしないこと(): void
+    {
+        // given
+        Config::initialize(__DIR__ . '/data/Config');
+        $sut = new DiagramUnit(
+            '\Bar\Foo',
+            ['\Bar\Foo'],
+            false,
+            null
+        );
+
+        // when
+        $shouldStop = $sut->shouldStopTraverse();
+
+        // then
         $this->assertTrue($shouldStop);
     }
 
