@@ -79,9 +79,13 @@ final class PlantUmlExporter implements Exporter
 
     private function diagramShape(DiagramUnit $diagramUnit): string
     {
-        return $diagramUnit->isNonClassLikeRoot()
-            ? 'circle '
-            : $diagramUnit->declaringElement() . ' ';
+        if ($diagramUnit->isNonClassLikeRoot()) {
+            return 'circle ';
+        }
+        if ($diagramUnit->isTrait()) {
+            return 'abstract ';
+        }
+        return $diagramUnit->declaringElement() . ' ';
     }
 
     private function replaceErrorStr(DiagramUnit $diagramUnit): string
