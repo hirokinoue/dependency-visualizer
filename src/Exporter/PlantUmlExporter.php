@@ -72,16 +72,27 @@ final class PlantUmlExporter implements Exporter
             }
             $this->drawnDependencies[] = $lineForCheck;
 
-            $this->diagram .= "{$this->replaceErrorStr($diagramUnit)} --> {$this->replaceErrorStr($dependent)}" . PHP_EOL;
+            $this->diagram .= "{$this->diagramIdentifier($diagramUnit)} --> {$this->diagramIdentifier($dependent)}" . PHP_EOL;
             $this->drawDependency($dependent);
         }
     }
 
+    private function diagramIdentifier(DiagramUnit $diagramUnit): string
+    {
+        $className = $this->replaceErrorStr($diagramUnit);
+        $namespace = ($diagramUnit->namespace() === '') ? '' : "{$diagramUnit->namespace()}.";
+        return $namespace . $className;
+    }
+
     private function diagramShape(DiagramUnit $diagramUnit): string
     {
-        return $diagramUnit->isNonClassLikeRoot()
-            ? 'circle '
-            : $diagramUnit->declaringElement() . ' ';
+        if ($diagramUnit->isNonClassLikeRoot()) {
+            return 'circle ';
+        }
+        if ($diagramUnit->isTrait()) {
+            return 'abstract ';
+        }
+        return $diagramUnit->declaringElement() . ' ';
     }
 
     private function replaceErrorStr(DiagramUnit $diagramUnit): string
