@@ -7,13 +7,10 @@ use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\Exporter\Exporter;
 use Hirokinoue\DependencyVisualizer\Exporter\PlantUmlExporter;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\NullHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
 foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $autoload) {
     if (file_exists($autoload)) {
+        $loadedFile = $autoload;
         require $autoload;
         break;
     }
@@ -35,30 +32,26 @@ Config::initialize(\getcwd());
 
 ini_set('memory_limit', Config::memoryLimit());
 
-$logger = new Logger('dependency visualizer');
-if ($options['log']) {
-    $handler = new StreamHandler(getcwd() . '/app.log');
-    $handler->setFormatter(new LineFormatter(null, null, true));
-    $logger->pushHandler($handler);
-} else {
-    $logger->pushHandler(new NullHandler());
-}
+Logger::initialize($options['log']);
 
-$logger->info('start analyzing', ['target' => $file]);
+Logger::info('autoload file has been loaded', ['path' => $loadedFile ?? '']);
+Logger::info('start analyzing', ['target' => $file]);
 
 try {
     $dependencyVisualizer = DependencyVisualizer::create($file);
     $diagramUnit = $dependencyVisualizer->analyze();
 } catch (\Exception $e) {
-    $logger->error($e->getMessage());
-    $logger->error('finish analyzing abnormally');
+    Logger::error($e->getMessage());
+    Logger::error('finish analyzing abnormally');
     exit(1);
 }
+
+Logger::info('start drawing');
 
 $exporter = exporterFactory($options);
 echo $exporter->export($diagramUnit);
 
-$logger->info('finish analyzing');
+Logger::info('finish analyzing');
 exit(0);
 
 function exporterFactory($options): Exporter {
