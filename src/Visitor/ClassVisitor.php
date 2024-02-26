@@ -6,6 +6,7 @@ use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
+use Hirokinoue\DependencyVisualizer\Logger;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeTraverser;
@@ -19,6 +20,7 @@ final class ClassVisitor extends NodeVisitorAbstract
     public function __construct(DiagramUnit $diagramUnit) {
         $diagramUnit->registerVisitedClass();
         $this->diagramUnit = $diagramUnit;
+        Logger::info('instantiate ClassVisitor', ['name' => $diagramUnit->fullyQualifiedClassName()]);
     }
 
     public function enterNode(Node $node) {
@@ -36,6 +38,7 @@ final class ClassVisitor extends NodeVisitorAbstract
 
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
+            Logger::info('load class', ['name' => $classFile->className()]);
             $ancestors = $this->diagramUnit->ancestors();
             $ancestors[] = $node->toCodeString();
 
