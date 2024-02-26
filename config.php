@@ -14,4 +14,5 @@ return $config = [
     'excludeFromAnalysis' => [
         'PhpParser\Node\\',
     ],
+    'maxDepth' => 5,
 ];

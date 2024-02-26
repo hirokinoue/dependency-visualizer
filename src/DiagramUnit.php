@@ -86,7 +86,7 @@ final class DiagramUnit
 
     public function shouldStopTraverse(): bool
     {
-        return $this->isCirculating || $this->isEndOfAnalysis();
+        return $this->isCirculating || $this->isEndOfAnalysis() || $this->layer === Config::maxDepth();
     }
 
     private function isEndOfAnalysis(): bool
