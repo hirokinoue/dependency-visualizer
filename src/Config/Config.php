@@ -9,6 +9,7 @@ class Config
     private static array $endOfAnalysis = [];
     /** @var string[] */
     private static array $excludeFromAnalysis = [];
+    private static int $maxDepth = 5;
 
     public static function initialize(string $baseDir): void
     {
@@ -25,6 +26,7 @@ class Config
         self::$memoryLimit = $config['memoryLimit'] ?? '1024M';
         self::$endOfAnalysis = $config['endOfAnalysis'] ?? [];
         self::$excludeFromAnalysis = $config['excludeFromAnalysis'] ?? [];
+        self::$maxDepth = $config['maxDepth'] ?? 5;
     }
 
     public static function memoryLimit(): string
@@ -46,5 +48,10 @@ class Config
     public static function excludeFromAnalysis(): array
     {
         return self::$excludeFromAnalysis;
+    }
+
+    public static function maxDepth(): int
+    {
+        return self::$maxDepth;
     }
 }

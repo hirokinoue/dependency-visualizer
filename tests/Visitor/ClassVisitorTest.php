@@ -2,12 +2,14 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests\Visitor;
 
+use _HumbugBox72e598a46208\RdKafka\Conf;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
+use Hirokinoue\DependencyVisualizer\Logger;
 use Hirokinoue\DependencyVisualizer\Visitor\ClassVisitor;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -132,6 +134,28 @@ RESULT;
                 __DIR__ . '/../data/Visitor/Config/1',
             ],
         ];
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function test指定された深さ以上解析しないこと(): void
+    {
+        // given
+        Config::initialize(__DIR__ . '/../data/Visitor/Config/maxDepth');
+        $sut = new ClassVisitor(new DiagramUnit(
+            '\Foo',
+            ['\Foo'],
+            false,
+            new ClassLikeWrapper(new Class_(new Identifier('Foo'))),
+            1
+        ));
+
+        // when
+        $sut->enterNode(new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\Baz'));
+
+        // then
+        $this->assertSame(2, DiagramUnit::countVisitedClasses());
     }
 
     /**
