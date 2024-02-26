@@ -23,6 +23,7 @@ final class DiagramUnit
     private bool $isRoot;
     // NOTE: nullになるのはDiagramUnitが定義済みクラスの場合とルートのDiagramUnitがクラスじゃない場合
     private ?ClassLikeWrapper $classLikeWrapper;
+    private int $layer;
 
     /**
      * @param string[] $ancestors
@@ -31,12 +32,14 @@ final class DiagramUnit
         string $fullyQualifiedClassName,
         array $ancestors = [],
         bool $isRoot = false,
-        ?ClassLikeWrapper $classLikeWrapper = null
+        ?ClassLikeWrapper $classLikeWrapper = null,
+        int $layer = 0
     ) {
         $this->fullyQualifiedClassName = $fullyQualifiedClassName;
         $this->ancestors = $ancestors;
         $this->isRoot = $isRoot;
         $this->classLikeWrapper = $classLikeWrapper;
+        $this->layer = $layer;
     }
 
     public function push(DiagramUnit $other): void
@@ -161,5 +164,13 @@ final class DiagramUnit
             return [];
         }
         return $this->classLikeWrapper->methods();
+    }
+
+    public function nextLayer(): int
+    {
+        if ($this->layer === PHP_INT_MAX) {
+            throw new \OverflowException("Layer limit exceeded.");
+        }
+        return $this->layer + 1;
     }
 }

@@ -383,4 +383,44 @@ final class DiagramUnitTest extends TestCase
         // then
         $this->assertEquals($expected, $methods);
     }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function test次の階層が得られること(): void
+    {
+        // given
+        $sut = new DiagramUnit(
+            '\Foo',
+            ['\Foo'],
+            true,
+            null,
+            0
+        );
+
+        // when
+        $nextLayer = $sut->nextLayer();
+
+        // then
+        $this->assertSame(1, $nextLayer);
+    }
+
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function test階層が上限を超えると例外を送出すること(): void
+    {
+        // given
+        $sut = new DiagramUnit(
+            '\Foo',
+            ['\Foo'],
+            true,
+            null,
+            PHP_INT_MAX
+        );
+        $this->expectException(\OverflowException::class);
+
+        // when
+        $sut->nextLayer();
+    }
 }
