@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests\ClassManipulator;
 
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -38,13 +39,13 @@ final class ClassLoaderTest extends TestCase
     {
         $userDefinedClassCode = <<<CODE
 <?php
-namespace Hirokinoue\DependencyVisualizer\Tests\data;
+namespace Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator;
 class UserDefinedClass{}
 
 CODE;
         yield 'ユーザー定義クラスはクラス名とコードが取得できる' => [
-            new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass'),
-            '\Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass',
+            new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator\UserDefinedClass'),
+            '\Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator\UserDefinedClass',
             $userDefinedClassCode,
         ];
         yield '内部クラスはクラス名のみ取得できる' => [
@@ -65,15 +66,36 @@ CODE;
     }
 
     /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function test除外指定されたファイルのユーザー定義クラスはクラス名のみ取得できる(): void {
+        // given
+        Config::initialize(__DIR__ . '/../data/ClassManipulator/Exclude');
+        $sut = ClassLoader::create(new FullyQualified(
+            'Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator\UserDefinedClass'
+        ));
+
+        // when
+        $className = $sut->className();
+        $code = $sut->content();
+
+        // then
+        $this->assertSame('\Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator\UserDefinedClass', $className);
+        $this->assertSame('', $code);
+    }
+
+    /**
      * @dataProvider dataロードしたことのあるクラスを再びロードしないこと
      * @noinspection NonAsciiCharacters
      */
     public function testロードしたことのあるクラスを再びロードしないこと(
         FullyQualified $fullyQualified,
         string $expectedClassName,
-        string $expectedCode
+        string $expectedCode,
+        callable $setUp
     ): void {
         // given
+        $setUp();
         $sut = ClassLoader::create($fullyQualified);
 
         // when
@@ -90,10 +112,14 @@ CODE;
      */
     public function dataロードしたことのあるクラスを再びロードしないこと(): \Generator
     {
-        $userDefinedClass = 'Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass';
+        $setUp = function () {
+            Config::initialize(__DIR__ . '/../data/ClassManipulator/NonExclude');
+            ClassLoader::resetLoadedClasses();
+        };
+        $userDefinedClass = 'Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator\UserDefinedClass';
         $userDefinedClassCode = <<<CODE
 <?php
-namespace Hirokinoue\DependencyVisualizer\Tests\data;
+namespace Hirokinoue\DependencyVisualizer\Tests\data\ClassManipulator;
 class UserDefinedClass{}
 
 CODE;
@@ -101,11 +127,13 @@ CODE;
             new FullyQualified($userDefinedClass),
             '\\' . $userDefinedClass,
             $userDefinedClassCode,
+            $setUp,
         ];
         yield '2回目以降はロードしない' => [
             new FullyQualified($userDefinedClass),
             '\\' . $userDefinedClass,
             '',
+            function () {},
         ];
     }
 
