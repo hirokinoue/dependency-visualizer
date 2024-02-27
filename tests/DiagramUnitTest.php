@@ -106,17 +106,14 @@ final class DiagramUnitTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, string>>
      */
-    public function data指定された名前空間のクラスをトラバースしないこと(): array
+    public function data指定された名前空間のクラスをトラバースしないこと(): \Generator
     {
-        return [
-            '名前空間を完全修飾名で指定する' => [
-                __DIR__ . '/data/DiagramUnit/Config/0',
-            ],
-            '名前空間を修飾名で指定する' => [
-                __DIR__ . '/data/DiagramUnit/Config/1',
-            ],
+        yield '名前空間を完全修飾名で指定する' => [
+            __DIR__ . '/data/DiagramUnit/Config/0',
+        ];
+        yield '名前空間を修飾名で指定する' => [
+            __DIR__ . '/data/DiagramUnit/Config/1',
         ];
     }
 
@@ -164,51 +161,48 @@ final class DiagramUnitTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, DiagramUnit|bool>>
      */
-    public function data解析結果のルートを見分けられること(): array
+    public function data解析結果のルートを見分けられること(): \Generator
     {
-        return [
-            '解析結果がルートではない_クラスのファイルがない' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    false,
-                    null
-                ),
+        yield '解析結果がルートではない_クラスのファイルがない' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 false,
+                null
+            ),
+            false,
+            false,
+        ];
+        yield '解析結果がルートではない_クラスのファイルがある' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 false,
-            ],
-            '解析結果がルートではない_クラスのファイルがある' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    false,
-                    new ClassLikeWrapper(new Class_('Bar'))
-                ),
-                false,
-                false,
-            ],
-            '解析結果がルート_クラスのファイルがない' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    true,
-                    null
-                ),
-                false,
+                new ClassLikeWrapper(new Class_('Bar'))
+            ),
+            false,
+            false,
+        ];
+        yield '解析結果がルート_クラスのファイルがない' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 true,
-            ],
-            '解析結果がルート_クラスのファイルがある' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    true,
-                    new ClassLikeWrapper(new Class_('Bar'))
-                ),
+                null
+            ),
+            false,
+            true,
+        ];
+        yield '解析結果がルート_クラスのファイルがある' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 true,
-                false,
-            ],
+                new ClassLikeWrapper(new Class_('Bar'))
+            ),
+            true,
+            false,
         ];
     }
 
@@ -306,38 +300,35 @@ final class DiagramUnitTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, DiagramUnit|bool>>
      */
-    public function dataトレイトを判定できること(): array
+    public function dataトレイトを判定できること(): \Generator
     {
-        return [
-            '具象クラス' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    false,
-                    new ClassLikeWrapper(new Class_('Bar'))
-                ),
+        yield '具象クラス' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 false,
-            ],
-            'トレイト' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    false,
-                    new ClassLikeWrapper(new Trait_('Bar'))
-                ),
-                true,
-            ],
-            'クラス類ではない' => [
-                new DiagramUnit(
-                    '\Foo',
-                    ['\Foo'],
-                    false,
-                    null
-                ),
+                new ClassLikeWrapper(new Class_('Bar'))
+            ),
+            false,
+        ];
+        yield 'トレイト' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
                 false,
-            ],
+                new ClassLikeWrapper(new Trait_('Bar'))
+            ),
+            true,
+        ];
+        yield 'クラス類ではない' => [
+            new DiagramUnit(
+                '\Foo',
+                ['\Foo'],
+                false,
+                null
+            ),
+            false,
         ];
     }
 

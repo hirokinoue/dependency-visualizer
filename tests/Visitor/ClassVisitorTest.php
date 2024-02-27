@@ -2,14 +2,12 @@
 
 namespace Hirokinoue\DependencyVisualizer\Tests\Visitor;
 
-use _HumbugBox72e598a46208\RdKafka\Conf;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeNodeFinder;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLikeWrapper;
 use Hirokinoue\DependencyVisualizer\ClassManipulator\ClassLoader;
 use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\DiagramUnit;
 use Hirokinoue\DependencyVisualizer\Exporter\StringExporter;
-use Hirokinoue\DependencyVisualizer\Logger;
 use Hirokinoue\DependencyVisualizer\Visitor\ClassVisitor;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -122,17 +120,14 @@ RESULT;
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, string>>
      */
-    public function data指定された名前空間を解析しないこと(): array
+    public function data指定された名前空間を解析しないこと(): \Generator
     {
-        return [
-            '名前空間を完全修飾名で指定する' => [
-                __DIR__ . '/../data/Visitor/Config/0',
-            ],
-            '名前空間を修飾名で指定する' => [
-                __DIR__ . '/../data/Visitor/Config/1',
-            ],
+        yield '名前空間を完全修飾名で指定する' => [
+            __DIR__ . '/../data/Visitor/Config/0',
+        ];
+        yield '名前空間を修飾名で指定する' => [
+            __DIR__ . '/../data/Visitor/Config/1',
         ];
     }
 
