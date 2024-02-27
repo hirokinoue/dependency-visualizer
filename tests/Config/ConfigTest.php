@@ -17,11 +17,13 @@ final class ConfigTest extends TestCase
 
         // when
         $memoryLimit = Config::memoryLimit();
+        $maxDepth = Config::maxDepth();
         $endOfAnalysis = Config::endOfAnalysis();
         $excludeFromAnalysis = Config::excludeFromAnalysis();
 
         // then
         $this->assertSame('Foo', $memoryLimit);
+        $this->assertSame(5, $maxDepth);
         $this->assertSame(['Bar\\'], $endOfAnalysis);
         $this->assertSame(['Baz\\'], $excludeFromAnalysis);
     }
