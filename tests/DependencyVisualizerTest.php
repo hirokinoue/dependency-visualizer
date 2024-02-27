@@ -31,9 +31,8 @@ final class DependencyVisualizerTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, string>>
      */
-    public function data分析結果をテキスト形式で出力できること(): array
+    public function data分析結果をテキスト形式で出力できること(): \Generator
     {
         $rootIsClass = <<<RESULT
 \Hirokinoue\DependencyVisualizer\Tests\data\Foo
@@ -64,23 +63,21 @@ RESULT;
   \Hirokinoue\DependencyVisualizer\Tests\data\RedundantDependency\C
 
 RESULT;
-        return [
-            '始点がクラスの時ルートがクラス名' => [
-                __DIR__ . '/data/Foo.php',
-                $rootIsClass,
-            ],
-            '始点がクラスではない時ルートがroot' => [
-                __DIR__ . '/data/foo.php',
-                $rootIsNotClass,
-            ],
-            '循環依存があっても無限ループせず解析が完了する' => [
-                __DIR__ . '/data/InfiniteLoop/A.php',
-                $infiniteLoop,
-            ],
-            '同じクラスを複数回使用する場合1つだけ図示する' => [
-                __DIR__ . '/data/RedundantDependency/A.php',
-                $performanceEnhancement,
-            ],
+        yield '始点がクラスの時ルートがクラス名' => [
+            __DIR__ . '/data/Foo.php',
+            $rootIsClass,
+        ];
+        yield '始点がクラスではない時ルートがroot' => [
+            __DIR__ . '/data/foo.php',
+            $rootIsNotClass,
+        ];
+        yield '循環依存があっても無限ループせず解析が完了する' => [
+            __DIR__ . '/data/InfiniteLoop/A.php',
+            $infiniteLoop,
+        ];
+        yield '同じクラスを複数回使用する場合1つだけ図示する' => [
+            __DIR__ . '/data/RedundantDependency/A.php',
+            $performanceEnhancement,
         ];
     }
 }

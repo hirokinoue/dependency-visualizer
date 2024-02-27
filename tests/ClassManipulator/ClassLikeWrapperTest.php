@@ -34,9 +34,8 @@ final class ClassLikeWrapperTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, Class_|string>>
      */
-    public function dataクラスの名前が取得できること(): array
+    public function dataクラスの名前が取得できること(): \Generator
     {
         $class1 = new Class_(new Identifier('Bar'));
         $class1->namespacedName = new FullyQualified('Foo\Bar');
@@ -44,19 +43,17 @@ final class ClassLikeWrapperTest extends TestCase
         $class2->namespacedName = null;
         $class3 =  new Class_(new Identifier('Bar'));
         $class3->namespacedName = null;
-        return [
-            '完全修飾名が取得できること' => [
-                $class1,
-                '\Foo\Bar',
-            ],
-            '名前が空であること' => [
-                $class2,
-                '',
-            ],
-            '完全修飾名ではない名前が取得できること' => [
-               $class3,
-                'Bar',
-            ],
+        yield '完全修飾名が取得できること' => [
+            $class1,
+            '\Foo\Bar',
+        ];
+        yield '名前が空であること' => [
+            $class2,
+            '',
+        ];
+        yield '完全修飾名ではない名前が取得できること' => [
+            $class3,
+            'Bar',
         ];
     }
 
@@ -78,31 +75,28 @@ final class ClassLikeWrapperTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, ClassLike|string>>
      */
-    public function data宣言する要素が取得できること(): array
+    public function data宣言する要素が取得できること(): \Generator
     {
-        return [
-            '具象クラス' => [
-                new Class_(''),
-                'class',
-            ],
-            '抽象クラス' => [
-                new Class_('', ['flags' => Modifiers::ABSTRACT]),
-                'abstract',
-            ],
-            'インタフェース' => [
-                new Interface_(''),
-                'interface',
-            ],
-            'トレイト' => [
-                new Trait_(''),
-                'trait',
-            ],
-            'enum' => [
-                new Enum_(''),
-                'enum',
-            ],
+        yield '具象クラス' => [
+            new Class_(''),
+            'class',
+        ];
+        yield '抽象クラス' => [
+            new Class_('', ['flags' => Modifiers::ABSTRACT]),
+            'abstract',
+        ];
+        yield 'インタフェース' => [
+            new Interface_(''),
+            'interface',
+        ];
+        yield 'トレイト' => [
+            new Trait_(''),
+            'trait',
+        ];
+        yield 'enum' => [
+            new Enum_(''),
+            'enum',
         ];
     }
 

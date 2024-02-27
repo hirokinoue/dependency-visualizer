@@ -33,9 +33,8 @@ final class ClassLoaderTest extends TestCase
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, string|FullyQualified>>
      */
-    public function data対象に応じてロードできること(): array
+    public function data対象に応じてロードできること(): \Generator
     {
         $userDefinedClassCode = <<<CODE
 <?php
@@ -43,27 +42,25 @@ namespace Hirokinoue\DependencyVisualizer\Tests\data;
 class UserDefinedClass{}
 
 CODE;
-        return [
-            'ユーザー定義クラスはクラス名とコードが取得できる' => [
-                new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass'),
-                '\Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass',
-                $userDefinedClassCode,
-            ],
-            '内部クラスはクラス名のみ取得できる' => [
-                new FullyQualified('Exception'),
-                '\Exception',
-                '',
-            ],
-            '定数はクラス名もコードも取得できない' => [
-                new FullyQualified('FOO'),
-                '',
-                '',
-            ],
-            'キーワードはクラス名もコードも取得できない' => [
-                new FullyQualified('true'),
-                '',
-                '',
-            ],
+        yield 'ユーザー定義クラスはクラス名とコードが取得できる' => [
+            new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass'),
+            '\Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass',
+            $userDefinedClassCode,
+        ];
+        yield '内部クラスはクラス名のみ取得できる' => [
+            new FullyQualified('Exception'),
+            '\Exception',
+            '',
+        ];
+        yield '定数はクラス名もコードも取得できない' => [
+            new FullyQualified('FOO'),
+            '',
+            '',
+        ];
+        yield 'キーワードはクラス名もコードも取得できない' => [
+            new FullyQualified('true'),
+            '',
+            '',
         ];
     }
 
@@ -90,9 +87,8 @@ CODE;
 
     /**
      * @noinspection NonAsciiCharacters
-     * @return array<string, array<int, FullyQualified|string|bool>>
      */
-    public function dataロードしたことのあるクラスを再びロードしないこと(): array
+    public function dataロードしたことのあるクラスを再びロードしないこと(): \Generator
     {
         $userDefinedClass = 'Hirokinoue\DependencyVisualizer\Tests\data\UserDefinedClass';
         $userDefinedClassCode = <<<CODE
@@ -101,17 +97,15 @@ namespace Hirokinoue\DependencyVisualizer\Tests\data;
 class UserDefinedClass{}
 
 CODE;
-        return [
-            '初回はロードする' => [
-                new FullyQualified($userDefinedClass),
-                '\\' . $userDefinedClass,
-                $userDefinedClassCode,
-            ],
-            '2回目以降はロードしない' => [
-                new FullyQualified($userDefinedClass),
-                '\\' . $userDefinedClass,
-                '',
-            ],
+        yield '初回はロードする' => [
+            new FullyQualified($userDefinedClass),
+            '\\' . $userDefinedClass,
+            $userDefinedClassCode,
+        ];
+        yield '2回目以降はロードしない' => [
+            new FullyQualified($userDefinedClass),
+            '\\' . $userDefinedClass,
+            '',
         ];
     }
 
