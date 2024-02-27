@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\DependencyVisualizer\ClassManipulator;
 
+use Hirokinoue\DependencyVisualizer\Config\Config;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\ParserFactory;
@@ -41,12 +42,24 @@ final class ClassLoader
         }
 
         $path = ($reflector->getFileName() === false) ? '' : $reflector->getFileName();
-        $code = self::readFile($path);
+        $code = self::isExcludedFile($path)
+            ? ''
+            : self::readFile($path);
 
         self::$loadedClasses[] = $fullyQualifiedName;
 
         // 定義済みクラスは$codeが空
         return new self($fullyQualifiedName, $code);
+    }
+
+    private static function isExcludedFile(string $absolutePath): bool
+    {
+        foreach (Config::excludeFilePath() as $excludeFilePath) {
+            if ($absolutePath === \getcwd()  . '/' . $excludeFilePath) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static function readFile(string $path): string {

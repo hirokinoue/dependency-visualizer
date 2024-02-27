@@ -5,11 +5,13 @@ namespace Hirokinoue\DependencyVisualizer\Config;
 class Config
 {
     private static string $memoryLimit = '1024M';
+    private static int $maxDepth = 5;
     /** @var string[] */
     private static array $endOfAnalysis = [];
     /** @var string[] */
     private static array $excludeFromAnalysis = [];
-    private static int $maxDepth = 5;
+    /** @var string[] */
+    private static array $excludeFilePath = [];
 
     public static function initialize(string $baseDir): void
     {
@@ -24,14 +26,20 @@ class Config
             }
         }
         self::$memoryLimit = $config['memoryLimit'] ?? '1024M';
+        self::$maxDepth = $config['maxDepth'] ?? 5;
         self::$endOfAnalysis = $config['endOfAnalysis'] ?? [];
         self::$excludeFromAnalysis = $config['excludeFromAnalysis'] ?? [];
-        self::$maxDepth = $config['maxDepth'] ?? 5;
+        self::$excludeFilePath = $config['excludeFilePath'] ?? [];
     }
 
     public static function memoryLimit(): string
     {
         return self::$memoryLimit;
+    }
+
+    public static function maxDepth(): int
+    {
+        return self::$maxDepth;
     }
 
     /**
@@ -50,8 +58,11 @@ class Config
         return self::$excludeFromAnalysis;
     }
 
-    public static function maxDepth(): int
+    /**
+     * @return string[]
+     */
+    public static function excludeFilePath(): array
     {
-        return self::$maxDepth;
+        return self::$excludeFilePath;
     }
 }

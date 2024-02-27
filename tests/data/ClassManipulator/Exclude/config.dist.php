@@ -1,14 +1,12 @@
 <?php declare(strict_types=1);
 return $config = [
-    'memoryLimit' => 'Foo',
+    'memoryLimit' => '1024M',
     'maxDepth' => 5,
     'endOfAnalysis' => [
-        'Bar\\',
     ],
     'excludeFromAnalysis' => [
-        'Baz\\',
     ],
     'excludeFilePath' => [
-        'src/Qux.php',
+        'tests/data/ClassManipulator/UserDefinedClass.php',
     ],
 ];

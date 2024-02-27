@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 return $config = [
     'memoryLimit' => '1024M',
+    'maxDepth' => 5,
     // Specify a part of a namespace to exclude classes from the analysis.
     // For example, when dependencies of third-party packages are not wanted to be analyzed.
     // Classes starting with the given namespace will not be analyzed and classes they depend on will not.
@@ -14,5 +15,8 @@ return $config = [
     'excludeFromAnalysis' => [
         'PhpParser\Node\\',
     ],
-    'maxDepth' => 5,
+    // Specify the relative path from the directory where the application is executed.
+    'excludeFilePath' => [
+        '',
+    ],
 ];
