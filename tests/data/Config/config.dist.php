@@ -8,4 +8,7 @@ return $config = [
     'excludeFromAnalysis' => [
         'Baz\\',
     ],
+    'excludeFilePath' => [
+        'src/Qux.php',
+    ],
 ];
