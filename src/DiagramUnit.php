@@ -63,6 +63,9 @@ final class DiagramUnit
     {
         $parts = explode('\\', $this->fullyQualifiedClassName);
         array_pop($parts);
+        if (!empty($parts) && $parts[0] === '') {
+            array_shift($parts);
+        }
         return implode('\\', $parts);
     }
 
