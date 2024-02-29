@@ -45,7 +45,7 @@ final class DiagramUnitTest extends TestCase
         // then
         $this->assertSame('\Foo\Bar', $fullQualifiedClassName);
         $this->assertSame('Bar', $className);
-        $this->assertSame('\Foo', $namespace);
+        $this->assertSame('Foo', $namespace);
     }
 
     /**
