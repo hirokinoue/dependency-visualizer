@@ -3,6 +3,7 @@
 
 namespace Hirokinoue\DependencyVisualizer;
 
+use Composer\XdebugHandler\XdebugHandler;
 use Hirokinoue\DependencyVisualizer\Config\Config;
 use Hirokinoue\DependencyVisualizer\Exporter\Exporter;
 use Hirokinoue\DependencyVisualizer\Exporter\PlantUmlExporter;
@@ -21,6 +22,7 @@ list($options, $file) = parseArgs($argv);
 if ($options['help']) {
     echo 'Usage: dependency-visualizer [options] <target php file>' . PHP_EOL;
     echo 'Options:' . PHP_EOL;
+    echo '  -d: Load Xdebug.' . PHP_EOL;
     echo '  -h: Show this help.' . PHP_EOL;
     echo '  -l: Output log to current directory.' . PHP_EOL;
     echo '  -m: Draw methods in diagram.' . PHP_EOL;
@@ -28,6 +30,11 @@ if ($options['help']) {
     exit(0);
 }
 
+if ($options['loadXdebug'] === false) {
+    $xdebug = new XdebugHandler('dependency-visualizer');
+    $xdebug->check();
+    unset($xdebug);
+}
 Config::initialize(\getcwd());
 
 ini_set('memory_limit', Config::memoryLimit());
@@ -36,6 +43,7 @@ Logger::initialize($options['log']);
 
 Logger::info('autoload file has been loaded', ['path' => $loadedFile ?? '']);
 Logger::info('start analyzing', ['target' => $file]);
+Logger::info('Xdebug is ' . (extension_loaded('xdebug') ? 'enabled.' : 'disabled.'));
 
 try {
     $dependencyVisualizer = DependencyVisualizer::create($file);
@@ -63,6 +71,7 @@ function exporterFactory($options): Exporter {
 
 function parseArgs($args): array {
     $options = [
+        'loadXdebug' => false,
         'help' => false,
         'log' => false,
         'drawMethod' => false,
@@ -71,6 +80,9 @@ function parseArgs($args): array {
     $file = '';
     foreach ($args as $arg) {
         switch ($arg) {
+            case '-d':
+                $options['loadXdebug'] = true;
+                break;
             case '-h':
                 $options['help'] = true;
                 break;

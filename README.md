@@ -56,6 +56,7 @@ $ ./vendor/bin/dependency-visualizer -h
 
 Usage: dependency-visualizer [options] <target php file>
 Options:
+  -d: Load Xdebug.
   -h: Show this help.
   -l: Output log to current directory.
   -m: Draw methods in diagram.
