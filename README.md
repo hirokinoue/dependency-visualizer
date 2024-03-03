@@ -30,6 +30,7 @@ Add a `config.php`, `config.php.dist` or `config.dist.php` to the directory from
 <?php declare(strict_types=1);
 return $config = [
     'memoryLimit' => '1024M',
+    // Specify the number of depths to analyze in the dependency hierarchy.
     'maxDepth' => 5,
     // Specify a part of a namespace to exclude classes from the analysis.
     // For example, when dependencies of third-party packages are not wanted to be analyzed.
