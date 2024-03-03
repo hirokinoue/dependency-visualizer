@@ -1,0 +1,34 @@
+@startuml
+package PhpParser <<Folder>> {
+class Lexer <<root>>
+}
+package PhpParser <<Folder>> {
+interface ErrorHandler
+}
+package PhpParser <<Folder>> {
+class Error
+}
+stereotype RuntimeException
+package PhpParser\ErrorHandler <<Folder>> {
+class Throwing
+}
+package PhpParser <<Folder>> {
+class Token
+}
+package PhpParser\Internal <<Folder>> {
+class TokenPolyfill
+}
+stereotype PhpToken
+stereotype TypeError
+PhpParser.Lexer --> PhpParser.ErrorHandler
+PhpParser.ErrorHandler --> PhpParser.Error
+PhpParser.Error --> RuntimeException
+PhpParser.Lexer --> PhpParser\ErrorHandler.Throwing
+PhpParser\ErrorHandler.Throwing --> PhpParser.ErrorHandler
+PhpParser\ErrorHandler.Throwing --> PhpParser.Error
+PhpParser.Lexer --> PhpParser.Token
+PhpParser.Token --> PhpParser\Internal.TokenPolyfill
+PhpParser\Internal.TokenPolyfill --> PhpToken
+PhpParser\Internal.TokenPolyfill --> TypeError
+PhpParser.Lexer --> PhpParser.Error
+@enduml
