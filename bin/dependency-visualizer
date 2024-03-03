@@ -35,12 +35,11 @@ if ($options['loadXdebug'] === false) {
     $xdebug->check();
     unset($xdebug);
 }
-Config::initialize(\getcwd());
 
+Config::initialize(\getcwd());
 ini_set('memory_limit', Config::memoryLimit());
 
 Logger::initialize($options['log']);
-
 Logger::info('autoload file has been loaded', ['path' => $loadedFile ?? '']);
 Logger::info('start analyzing', ['target' => $file]);
 Logger::info('Xdebug is ' . (extension_loaded('xdebug') ? 'enabled.' : 'disabled.'));
