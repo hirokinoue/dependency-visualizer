@@ -10,14 +10,14 @@ This tool is experimental and possesses only basic functionality. For example, i
 1. Edit composer.json  
     ```
     {
-      "repositories": [
-        {
-          "type": "vcs",
-          "url": "https://github.com/hirokinoue/dependency-visualizer"
-        }
-      ],
-      "minimum-stability": "dev",
-      "prefer-stable": true
+        "repositories": [
+            {
+                "type": "vcs",
+                "url": "https://github.com/hirokinoue/dependency-visualizer"
+            }
+        ],
+        "minimum-stability": "dev",
+        "prefer-stable": true
     }
     ```
 
