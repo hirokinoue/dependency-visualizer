@@ -4,7 +4,7 @@
 ## Overview
 Dependency Visualizer is a tool that visualizes dependency among classes.
 
-This tool is experimental and possesses only basic functionality. For example, it doesn't have mechanism to resolve expressions and infer types, nor does it interpret PHPDoc.
+This tool is experimental and possesses only basic functionality. For example, it doesn't have a mechanism to resolve expressions and infer types, nor does it interpret PHPDoc.
 
 # Installation
 1. Edit composer.json  
