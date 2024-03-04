@@ -21,6 +21,8 @@ This tool is experimental and possesses only basic functionality. For example, i
     }
     ```
 
+   Please note that this tool is experimental. Consider whether your project can accept a minimum stability of 'dev' before installing it.
+
 2. Install using composer  
 `$ composer require --dev hirokinoue/dependency-visualizer`
 
