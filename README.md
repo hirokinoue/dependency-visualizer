@@ -15,7 +15,9 @@ This tool is experimental and possesses only basic functionality. For example, i
           "type": "vcs",
           "url": "https://github.com/hirokinoue/dependency-visualizer"
         }
-      ]
+      ],
+      "minimum-stability": "dev",
+      "prefer-stable": true
     }
     ```
 
