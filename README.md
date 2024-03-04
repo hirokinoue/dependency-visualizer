@@ -4,20 +4,24 @@
 ## Overview
 Dependency Visualizer is a tool that visualizes dependency among classes.
 
-This tool is experimental and possesses only basic functionality. For example, it doesn't have mechanism to resolve expressions and infer types, nor does it interpret PHPDoc.
+This tool is experimental and possesses only basic functionality. For example, it doesn't have a mechanism to resolve expressions and infer types, nor does it interpret PHPDoc.
 
 # Installation
 1. Edit composer.json  
     ```
     {
-      "repositories": [
-        {
-          "type": "vcs",
-          "url": "https://github.com/hirokinoue/dependency-visualizer"
-        }
-      ]
+        "repositories": [
+            {
+                "type": "vcs",
+                "url": "https://github.com/hirokinoue/dependency-visualizer"
+            }
+        ],
+        "minimum-stability": "dev",
+        "prefer-stable": true
     }
     ```
+
+   Please note that this tool is experimental. Consider whether your project can accept a minimum stability of 'dev' before installing it.
 
 2. Install using composer  
 `$ composer require --dev hirokinoue/dependency-visualizer`
