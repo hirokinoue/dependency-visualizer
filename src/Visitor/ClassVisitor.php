@@ -24,10 +24,6 @@ final class ClassVisitor extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
-        if ($this->diagramUnit->shouldStopTraverse()) {
-            return $node;
-        }
-
         if (!$node instanceof FullyQualified) {
             return $node;
         }
@@ -54,7 +50,7 @@ final class ClassVisitor extends NodeVisitorAbstract
             );
             $this->diagramUnit->push($subClass);
 
-            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited()) {
+            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited() || $subClass->shouldStopTraverse()) {
                 return $node;
             }
 

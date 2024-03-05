@@ -150,7 +150,7 @@ RESULT;
         $sut->enterNode(new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\Baz'));
 
         // then
-        $this->assertSame(2, DiagramUnit::countVisitedClasses());
+        $this->assertSame(1, DiagramUnit::countVisitedClasses());
     }
 
     /**
