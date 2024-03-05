@@ -13,11 +13,6 @@ final class DiagramUnit
      * @var DiagramUnit[] $classesDirectlyDependsOn
      */
     private array $classesDirectlyDependsOn = [];
-    /**
-     * @var string[] $ancestors Array of fully qualified class name.
-     */
-    private array $ancestors;
-    private bool $isCirculating = false;
     /** @var array<int, string> */
     private static array $visitedClasses = [];
     private bool $isRoot;
@@ -25,18 +20,13 @@ final class DiagramUnit
     private ?ClassLikeWrapper $classLikeWrapper;
     private int $layer;
 
-    /**
-     * @param string[] $ancestors
-     */
     public function __construct(
         string $fullyQualifiedClassName,
-        array $ancestors = [],
         bool $isRoot = false,
         ?ClassLikeWrapper $classLikeWrapper = null,
         int $layer = 0
     ) {
         $this->fullyQualifiedClassName = $fullyQualifiedClassName;
-        $this->ancestors = $ancestors;
         $this->isRoot = $isRoot;
         $this->classLikeWrapper = $classLikeWrapper;
         $this->layer = $layer;
@@ -47,7 +37,6 @@ final class DiagramUnit
         if (!$this->hasBeenPushed($other)) {
             $this->classesDirectlyDependsOn[] = $other;
         }
-        $other->isCirculating = in_array($other->fullyQualifiedClassName(), $this->ancestors, true);
     }
 
     public function fullyQualifiedClassName(): string {
@@ -80,16 +69,9 @@ final class DiagramUnit
         return $this->classesDirectlyDependsOn;
     }
 
-    /**
-     * @return string[]
-     */
-    public function ancestors(): array {
-        return $this->ancestors;
-    }
-
     public function shouldStopTraverse(): bool
     {
-        return $this->isCirculating || $this->isEndOfAnalysis() || $this->layer === Config::maxDepth();
+        return $this->isEndOfAnalysis() || $this->layer === Config::maxDepth();
     }
 
     private function isEndOfAnalysis(): bool

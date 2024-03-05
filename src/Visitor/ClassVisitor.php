@@ -35,15 +35,12 @@ final class ClassVisitor extends NodeVisitorAbstract
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
             Logger::info('load class', ['name' => $classFile->className()]);
-            $ancestors = $this->diagramUnit->ancestors();
-            $ancestors[] = $node->toCodeString();
 
             $stmts = $classFile->stmts();
             $classLike = ClassLikeNodeFinder::find($stmts);
 
             $subClass = new DiagramUnit(
                 $classFile->className(),
-                $ancestors,
                 false,
                 $classLike,
                 $this->diagramUnit->nextLayer()

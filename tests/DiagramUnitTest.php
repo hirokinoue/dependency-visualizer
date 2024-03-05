@@ -31,7 +31,6 @@ final class DiagramUnitTest extends TestCase
         // given
         $sut = new DiagramUnit(
             '\Foo\Bar',
-            ['\Foo\Bar'],
             false,
             null
         );
@@ -49,40 +48,6 @@ final class DiagramUnitTest extends TestCase
     }
 
     /**
-     * @noinspection NonAsciiCharacters
-     */
-    public function test循環依存している時トラバースしないこと(): void
-    {
-        // given
-        $sut = new DiagramUnit(
-            '\Foo\Bar',
-            ['\Foo\Bar'],
-            false,
-            null
-        );
-        $diagramUnit = new DiagramUnit(
-            '\Foo\Baz',
-            ['\Foo\Bar', '\Foo\Baz'],
-            false,
-            null
-        );
-
-        // when1
-        $shouldStop = $sut->shouldStopTraverse();
-
-        // then1
-        $this->assertFalse($shouldStop);
-
-        // when2
-        $sut->push($diagramUnit);
-        $diagramUnit->push($sut);
-        $shouldStop = $sut->shouldStopTraverse();
-
-        // then2
-        $this->assertTrue($shouldStop);
-    }
-
-    /**
      * @dataProvider data指定された名前空間のクラスをトラバースしないこと
      * @noinspection NonAsciiCharacters
      */
@@ -92,7 +57,6 @@ final class DiagramUnitTest extends TestCase
         Config::initialize($path);
         $sut = new DiagramUnit(
             '\Bar\Foo',
-            ['\Bar\Foo'],
             false,
             null
         );
@@ -125,7 +89,6 @@ final class DiagramUnitTest extends TestCase
         // given
         $sut = new DiagramUnit(
             '\Foo\Bar',
-            ['\Foo\Bar'],
             false,
             null
         );
@@ -167,7 +130,6 @@ final class DiagramUnitTest extends TestCase
         yield '解析結果がルートではない_クラスのファイルがない' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 false,
                 null
             ),
@@ -177,7 +139,6 @@ final class DiagramUnitTest extends TestCase
         yield '解析結果がルートではない_クラスのファイルがある' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 false,
                 new ClassLikeWrapper(new Class_('Bar'))
             ),
@@ -187,7 +148,6 @@ final class DiagramUnitTest extends TestCase
         yield '解析結果がルート_クラスのファイルがない' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 true,
                 null
             ),
@@ -197,7 +157,6 @@ final class DiagramUnitTest extends TestCase
         yield '解析結果がルート_クラスのファイルがある' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 true,
                 new ClassLikeWrapper(new Class_('Bar'))
             ),
@@ -231,7 +190,6 @@ final class DiagramUnitTest extends TestCase
             '具象クラス' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     new ClassLikeWrapper(new Class_('Bar'))
                 ),
@@ -240,7 +198,6 @@ final class DiagramUnitTest extends TestCase
             '抽象クラス' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     new ClassLikeWrapper($abstract)
                 ),
@@ -249,7 +206,6 @@ final class DiagramUnitTest extends TestCase
             'インタフェース' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     new ClassLikeWrapper(new Interface_('Bar'))
                 ),
@@ -258,7 +214,6 @@ final class DiagramUnitTest extends TestCase
             'トレイト' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     new ClassLikeWrapper(new Trait_('Bar'))
                 ),
@@ -267,7 +222,6 @@ final class DiagramUnitTest extends TestCase
             'Enum' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     new ClassLikeWrapper(new Enum_('Bar'))
                 ),
@@ -276,7 +230,6 @@ final class DiagramUnitTest extends TestCase
             '以上のどれでもない場合デフォルトの宣言要素を返す' => [
                 new DiagramUnit(
                     '\Foo',
-                    ['\Foo'],
                     false,
                     null
                 ),
@@ -306,7 +259,6 @@ final class DiagramUnitTest extends TestCase
         yield '具象クラス' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 false,
                 new ClassLikeWrapper(new Class_('Bar'))
             ),
@@ -315,7 +267,6 @@ final class DiagramUnitTest extends TestCase
         yield 'トレイト' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 false,
                 new ClassLikeWrapper(new Trait_('Bar'))
             ),
@@ -324,7 +275,6 @@ final class DiagramUnitTest extends TestCase
         yield 'クラス類ではない' => [
             new DiagramUnit(
                 '\Foo',
-                ['\Foo'],
                 false,
                 null
             ),
@@ -340,7 +290,6 @@ final class DiagramUnitTest extends TestCase
         // given
         $sut = new DiagramUnit(
             '\Foo',
-            ['\Foo'],
             true,
             null
         );
@@ -363,7 +312,6 @@ final class DiagramUnitTest extends TestCase
         $classLikeWrapper = new ClassLikeWrapper($classLike);
         $sut = new DiagramUnit(
             '\Foo',
-            ['\Foo'],
             true,
             $classLikeWrapper
         );
@@ -383,7 +331,6 @@ final class DiagramUnitTest extends TestCase
         // given
         $sut = new DiagramUnit(
             '\Foo',
-            ['\Foo'],
             true,
             null,
             0
@@ -404,7 +351,6 @@ final class DiagramUnitTest extends TestCase
         // given
         $sut = new DiagramUnit(
             '\Foo',
-            ['\Foo'],
             true,
             null,
             PHP_INT_MAX
