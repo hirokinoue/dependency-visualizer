@@ -24,10 +24,6 @@ final class ClassVisitor extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
-        if ($this->diagramUnit->shouldStopTraverse()) {
-            return $node;
-        }
-
         if (!$node instanceof FullyQualified) {
             return $node;
         }
@@ -39,22 +35,19 @@ final class ClassVisitor extends NodeVisitorAbstract
         $classFile = ClassLoader::create($node);
         if ($classFile->isClass()) {
             Logger::info('load class', ['name' => $classFile->className()]);
-            $ancestors = $this->diagramUnit->ancestors();
-            $ancestors[] = $node->toCodeString();
 
             $stmts = $classFile->stmts();
             $classLike = ClassLikeNodeFinder::find($stmts);
 
             $subClass = new DiagramUnit(
                 $classFile->className(),
-                $ancestors,
                 false,
                 $classLike,
                 $this->diagramUnit->nextLayer()
             );
             $this->diagramUnit->push($subClass);
 
-            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited()) {
+            if ($stmts === [] || $classFile->notLoaded() || $subClass->shouldStopTraverse()) {
                 return $node;
             }
 

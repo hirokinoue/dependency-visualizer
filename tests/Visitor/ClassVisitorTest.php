@@ -35,7 +35,6 @@ final class ClassVisitorTest extends TestCase
         $stmts = $this->parse(__DIR__ . '/../data/root.php');
         $diagramUnit = new DiagramUnit(
             'root',
-            ['root'],
             true,
             null
         );
@@ -69,7 +68,6 @@ RESULT;
         $classLike = ClassLikeNodeFinder::find($stmts);
         $diagramUnit = new DiagramUnit(
             '\Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A',
-            ['\Hirokinoue\DependencyVisualizer\Tests\data\Visitor\VisitedClass\A'],
             false,
             $classLike
         );
@@ -105,7 +103,6 @@ RESULT;
         Config::initialize($path);
         $sut = new ClassVisitor(new DiagramUnit(
             '\Hirokinoue\DependencyVisualizer\Tests\data\Foo',
-            ['\Hirokinoue\DependencyVisualizer\Tests\data\Foo'],
             false,
             new ClassLikeWrapper(new Class_(new Identifier('Foo')))
         ));
@@ -140,7 +137,6 @@ RESULT;
         Config::initialize(__DIR__ . '/../data/Visitor/Config/maxDepth');
         $sut = new ClassVisitor(new DiagramUnit(
             '\Foo',
-            ['\Foo'],
             false,
             new ClassLikeWrapper(new Class_(new Identifier('Foo'))),
             1
@@ -150,7 +146,7 @@ RESULT;
         $sut->enterNode(new FullyQualified('Hirokinoue\DependencyVisualizer\Tests\data\Baz'));
 
         // then
-        $this->assertSame(2, DiagramUnit::countVisitedClasses());
+        $this->assertSame(1, DiagramUnit::countVisitedClasses());
     }
 
     /**
