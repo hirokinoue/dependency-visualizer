@@ -47,7 +47,7 @@ final class ClassVisitor extends NodeVisitorAbstract
             );
             $this->diagramUnit->push($subClass);
 
-            if ($stmts === [] || $classFile->notLoaded() || $subClass->hasBeenVisited() || $subClass->shouldStopTraverse()) {
+            if ($stmts === [] || $classFile->notLoaded() || $subClass->shouldStopTraverse()) {
                 return $node;
             }
 

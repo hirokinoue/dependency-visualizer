@@ -71,7 +71,7 @@ final class DiagramUnit
 
     public function shouldStopTraverse(): bool
     {
-        return $this->isEndOfAnalysis() || $this->layer === Config::maxDepth();
+        return $this->isEndOfAnalysis() || $this->hasReachedMaxDepth() || $this->hasBeenVisited();
     }
 
     private function isEndOfAnalysis(): bool
@@ -85,6 +85,11 @@ final class DiagramUnit
         return false;
     }
 
+    private function hasReachedMaxDepth(): bool
+    {
+        return $this->layer === Config::maxDepth();
+    }
+
     private function hasBeenPushed(DiagramUnit $other): bool
     {
         foreach ($this->classesDirectlyDependsOn as $diagramUnit) {
@@ -95,7 +100,7 @@ final class DiagramUnit
         return false;
     }
 
-    public function hasBeenVisited(): bool
+    private function hasBeenVisited(): bool
     {
         if (in_array($this->fullyQualifiedClassName, self::$visitedClasses)) {
             return true;

@@ -94,14 +94,14 @@ final class DiagramUnitTest extends TestCase
         );
 
         // when1
-        $shouldStop = $sut->hasBeenVisited();
+        $shouldStop = $sut->shouldStopTraverse();
 
         // then1
         $this->assertFalse($shouldStop);
 
         // when2
         $sut->registerVisitedClass();
-        $shouldStop = $sut->hasBeenVisited();
+        $shouldStop = $sut->shouldStopTraverse();
 
         // then2
         $this->assertTrue($shouldStop);
